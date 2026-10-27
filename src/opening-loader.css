@@ -1,0 +1,11 @@
+.opening-loader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #101010; color: #fff9ef; opacity: 1; transition: opacity .6s ease; }
+.opening-loader.is-leaving { opacity: 0; pointer-events: none; }
+.opening-loader-content { display: flex; flex-direction: column; align-items: center; padding: 32px 24px; transform: translateY(-12px); }
+.opening-loader .opening-loader-mark { display: block; font-size: 49px; line-height: 1; color: #fff; margin-bottom: 42px; }
+.opening-loader p { margin: 0; font-size: clamp(16px, 1.25vw, 20px); font-weight: 600; line-height: 1.8; letter-spacing: .035em; text-align: center; text-wrap: balance; line-break: strict; word-break: normal; }
+.opening-loader p > span { display: inline-block; }
+.opening-loader-bars { display: flex; align-items: center; justify-content: center; gap: 4px; height: 20px; margin-top: 29px; }
+.opening-loader-bars i { display: block; width: 2px; height: 14px; background: #e54c3e; transform: scaleY(.3); animation: opening-loader-pulse .85s ease-in-out infinite alternate; animation-delay: calc(var(--bar-index) * -.14s); }
+@keyframes opening-loader-pulse { from { transform: scaleY(.25); opacity: .55; } to { transform: scaleY(1); opacity: 1; } }
+@media (max-width: 480px) { .opening-loader .opening-loader-mark { margin-bottom: 34px; } .opening-loader p { max-width: 22em; } }
+@media (prefers-reduced-motion: reduce) { .opening-loader { transition: none; } .opening-loader-bars i { animation: none; transform: scaleY(.6); } }

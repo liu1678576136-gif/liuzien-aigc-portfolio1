@@ -1,0 +1,17 @@
+{
+  "source": "1x/清晰主.mp4",
+  "sourceWidth": 2538,
+  "sourceHeight": 1440,
+  "width": 3840,
+  "height": 2220,
+  "duration": 38.466667,
+  "fps": 30,
+  "audio": "ignored",
+  "film": "film.mp4",
+  "poster": "poster.webp",
+  "keyframeInterval": 15,
+  "crf": 18,
+  "framing": "contain in the existing 1280:740 interaction plane",
+  "sourceIsNative4K": false,
+  "sourceDuration": 38.48
+}

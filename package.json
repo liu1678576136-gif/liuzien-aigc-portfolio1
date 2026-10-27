@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build && node scripts/generate-video-posters.mjs dist && node scripts/optimize-media.mjs dist/assets && node scripts/prune-deploy-assets.mjs && node scripts/prepare-sites-build.mjs",
+    "build": "node scripts/restore-source-media.mjs && node scripts/prepare-studio-assets.mjs && vite build && node scripts/prepare-static-assets.mjs",
+    "build:pages": "npm run build && node scripts/prepare-github-pages.mjs",
+    "build:sites": "node scripts/restore-source-media.mjs && node scripts/prepare-studio-assets.mjs && vite build && node scripts/prepare-sites-build.mjs",
+    "build:local": "node scripts/restore-source-media.mjs && node scripts/prepare-studio-assets.mjs && vite build",
+    "prepare:studio": "node scripts/prepare-studio-assets.mjs",
     "generate:marquee-previews": "node scripts/generate-marquee-previews.mjs",
     "optimize:media": "node scripts/optimize-media.mjs",
     "optimize:deploy-media": "node scripts/optimize-media.mjs dist/assets",

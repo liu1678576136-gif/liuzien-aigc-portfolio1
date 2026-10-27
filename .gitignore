@@ -7,5 +7,12 @@ portfolio-*.png
 .chrome-motion-check/
 .chrome-video-analysis/
 output/
+outputs/
+artifacts/
 project-pin-check.png
 video-motion-contact-sheet.jpg
+
+# Reassembled original scene videos; no recompression
+/public/assets/scene/curtain-opening-4k-v4/film.mp4
+/public/assets/scene/main-gallery-4k-v4/film.mp4
+/public/assets/scene/curtain-finale-4k-v4/film.mp4

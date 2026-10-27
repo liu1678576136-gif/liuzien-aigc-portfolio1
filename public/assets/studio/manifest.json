@@ -1,0 +1,772 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "source": "/assets/video-works/posters/jin-yi-wei.jpg",
+      "kind": "cover",
+      "usages": [
+        "jin-yi-wei:gallery",
+        "jin-yi-wei:poster"
+      ],
+      "output": "/assets/studio/jin-yi-wei-cover.webp",
+      "originalWidth": 1400,
+      "originalHeight": 777,
+      "width": 1400,
+      "height": 777,
+      "bytes": 53434,
+      "sha256": "064c5762f9199095f1003a0821ef87badc13a0e4c0ffc3f767b7fa942f7a6b84"
+    },
+    {
+      "source": "/assets/video-works/posters/dark-city-final.jpg",
+      "kind": "cover",
+      "usages": [
+        "dark-city:gallery",
+        "dark-city:poster",
+        "dark-city:poster"
+      ],
+      "output": "/assets/studio/dark-city-final-cover.webp",
+      "originalWidth": 1400,
+      "originalHeight": 788,
+      "width": 1400,
+      "height": 788,
+      "bytes": 42942,
+      "sha256": "e7c7a5890966c8ff338daa914a887384e05bd7c673966a91eba22876a4a00e7f"
+    },
+    {
+      "source": "/assets/video-works/posters/dark-city-previs.jpg",
+      "kind": "cover",
+      "usages": [
+        "dark-city:poster"
+      ],
+      "output": "/assets/studio/dark-city-previs-cover.webp",
+      "originalWidth": 1400,
+      "originalHeight": 788,
+      "width": 1400,
+      "height": 788,
+      "bytes": 9652,
+      "sha256": "e70881dedcf28db08b30dd64533325e7d92fdd3d3c4e242828682fe5ce6cba9a"
+    },
+    {
+      "source": "/assets/video-works/references/western-cover.jpg",
+      "kind": "cover",
+      "usages": [
+        "western-dark:gallery",
+        "western-dark:poster"
+      ],
+      "output": "/assets/studio/western-cover-cover.webp",
+      "originalWidth": 1800,
+      "originalHeight": 1013,
+      "width": 1400,
+      "height": 788,
+      "bytes": 155372,
+      "sha256": "8b442956a32927ce813f38c49ff7be33c494ba1755e1fef2b0ecca85507c85e3"
+    },
+    {
+      "source": "/assets/video-works/posters/lipstick-ad.jpg",
+      "kind": "cover",
+      "usages": [
+        "lipstick-ad:gallery",
+        "lipstick-ad:poster"
+      ],
+      "output": "/assets/studio/lipstick-ad-cover.webp",
+      "originalWidth": 788,
+      "originalHeight": 1400,
+      "width": 619,
+      "height": 1100,
+      "bytes": 64108,
+      "sha256": "86697f24f30f303396e7f2c5b6b2077954c0c1ab35e5eabe4c73c076e5560e82"
+    },
+    {
+      "source": "/assets/video-works/posters/social-skincare.jpg",
+      "kind": "cover",
+      "usages": [
+        "social-skincare:gallery",
+        "social-skincare:poster"
+      ],
+      "output": "/assets/studio/social-skincare-cover.webp",
+      "originalWidth": 640,
+      "originalHeight": 1152,
+      "width": 611,
+      "height": 1100,
+      "bytes": 63342,
+      "sha256": "8ecb11f096b939c7febd30c34492cfbddba63cc89f601c89a5a48bc32b1fef70"
+    },
+    {
+      "source": "/assets/video-works/posters/bag-showcase.jpg",
+      "kind": "cover",
+      "usages": [
+        "bag-showcase:gallery",
+        "bag-showcase:poster"
+      ],
+      "output": "/assets/studio/bag-showcase-cover.webp",
+      "originalWidth": 777,
+      "originalHeight": 1400,
+      "width": 611,
+      "height": 1100,
+      "bytes": 27896,
+      "sha256": "2aca213a3c4c39e50c7a8fbad247209797d6443c4d5463e2334ca3279624655f"
+    },
+    {
+      "source": "/assets/video-works/posters/cafe-day.jpg",
+      "kind": "cover",
+      "usages": [
+        "cafe-day:gallery",
+        "cafe-day:poster"
+      ],
+      "output": "/assets/studio/cafe-day-cover.webp",
+      "originalWidth": 640,
+      "originalHeight": 1152,
+      "width": 611,
+      "height": 1100,
+      "bytes": 26066,
+      "sha256": "c6d4fca5bc4dbc2d0c49a69252f6f9f1d557d74c9ace227e60650b90807af4ac"
+    },
+    {
+      "source": "/assets/video-works/posters/cat-spring.jpg",
+      "kind": "cover",
+      "usages": [
+        "cat-seasons:gallery",
+        "cat-seasons:poster"
+      ],
+      "output": "/assets/studio/cat-spring-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 720,
+      "width": 1280,
+      "height": 720,
+      "bytes": 109572,
+      "sha256": "ae0bd0804ff142dce9dfbde3aa2bd653cda19579c2ea8e8373cce3b860d68e4d"
+    },
+    {
+      "source": "/assets/video-works/posters/cat-summer.jpg",
+      "kind": "cover",
+      "usages": [
+        "cat-seasons:poster"
+      ],
+      "output": "/assets/studio/cat-summer-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 720,
+      "width": 1280,
+      "height": 720,
+      "bytes": 128210,
+      "sha256": "89c810fd1dd1a2c335e2c63a2236a3bfb84f018015b042df7a0dd03dbcd93213"
+    },
+    {
+      "source": "/assets/video-works/posters/cat-autumn.jpg",
+      "kind": "cover",
+      "usages": [
+        "cat-seasons:poster"
+      ],
+      "output": "/assets/studio/cat-autumn-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 720,
+      "width": 1280,
+      "height": 720,
+      "bytes": 124172,
+      "sha256": "9ba167b6e58d535145300b2398bcbaaaffd1d7a30c8322090d7b02544cf86384"
+    },
+    {
+      "source": "/assets/video-works/posters/cat-winter.jpg",
+      "kind": "cover",
+      "usages": [
+        "cat-seasons:poster"
+      ],
+      "output": "/assets/studio/cat-winter-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 720,
+      "width": 1280,
+      "height": 720,
+      "bytes": 131780,
+      "sha256": "689a469fbc625e15341779370c482c739d8ac9f477390d721213822e8035f6a6"
+    },
+    {
+      "source": "/assets/video-works/posters/character-look-one.jpg",
+      "kind": "cover",
+      "usages": [
+        "character-looks:gallery",
+        "character-looks:poster"
+      ],
+      "output": "/assets/studio/character-look-one-cover.webp",
+      "originalWidth": 720,
+      "originalHeight": 1280,
+      "width": 619,
+      "height": 1100,
+      "bytes": 28768,
+      "sha256": "2f0d9773b107213df42a11be9ac8d15581612c1a5916e0a9f6f48e9abedc0710"
+    },
+    {
+      "source": "/assets/video-works/posters/character-look-two.jpg",
+      "kind": "cover",
+      "usages": [
+        "character-looks:poster"
+      ],
+      "output": "/assets/studio/character-look-two-cover.webp",
+      "originalWidth": 720,
+      "originalHeight": 1280,
+      "width": 619,
+      "height": 1100,
+      "bytes": 49000,
+      "sha256": "74cf66f23fff8af11c1c0581f262d41e4eddebdeb1477ffd1156384f18fccd19"
+    },
+    {
+      "source": "/assets/video-works/posters/character-portrait.jpg",
+      "kind": "cover",
+      "usages": [
+        "character-looks:poster"
+      ],
+      "output": "/assets/studio/character-portrait-cover.webp",
+      "originalWidth": 788,
+      "originalHeight": 1400,
+      "width": 619,
+      "height": 1100,
+      "bytes": 122536,
+      "sha256": "9191bc888569163356469c7137c83f68ddfa7e3a143adaffe1d6ddc961a712ac"
+    },
+    {
+      "source": "/assets/video-works/posters/wardrobe-result.jpg",
+      "kind": "cover",
+      "usages": [
+        "wardrobe-process:gallery",
+        "wardrobe-process:poster",
+        "wardrobe-process:poster"
+      ],
+      "output": "/assets/studio/wardrobe-result-cover.webp",
+      "originalWidth": 720,
+      "originalHeight": 1280,
+      "width": 619,
+      "height": 1100,
+      "bytes": 40374,
+      "sha256": "40ab42aa755e53bdab149c9d550c9c6496fc4c814a54e3b4dab8461955a29dd1"
+    },
+    {
+      "source": "/assets/video-works/references/wardrobe-garment.jpg",
+      "kind": "full",
+      "usages": [
+        "wardrobe-process:detail"
+      ],
+      "output": "/assets/studio/wardrobe-garment-full.webp",
+      "originalWidth": 1800,
+      "originalHeight": 1200,
+      "width": 1800,
+      "height": 1200,
+      "bytes": 115192,
+      "sha256": "8717f63cdebbffccf3af6c17af0acf4edd5fe705cbc13d62911aad66ad470e8d"
+    },
+    {
+      "source": "/assets/video-works/references/wardrobe-look.jpg",
+      "kind": "full",
+      "usages": [
+        "wardrobe-process:detail"
+      ],
+      "output": "/assets/studio/wardrobe-look-full.webp",
+      "originalWidth": 1280,
+      "originalHeight": 1707,
+      "width": 1280,
+      "height": 1707,
+      "bytes": 112340,
+      "sha256": "c8dced04f39c4ba04b764378b57d2f230a87d3e59127d03f308ba12adbd0308f"
+    },
+    {
+      "source": "/assets/video-works/posters/wardrobe-source.jpg",
+      "kind": "cover",
+      "usages": [
+        "wardrobe-process:poster"
+      ],
+      "output": "/assets/studio/wardrobe-source-cover.webp",
+      "originalWidth": 788,
+      "originalHeight": 1400,
+      "width": 619,
+      "height": 1100,
+      "bytes": 23224,
+      "sha256": "772362e6cab5201e1d81577bddbf6f68c08ce28fbdf0568c2f87669fe5a7d128"
+    },
+    {
+      "source": "/assets/video-works/posters/wardrobe-depth.jpg",
+      "kind": "cover",
+      "usages": [
+        "wardrobe-process:poster"
+      ],
+      "output": "/assets/studio/wardrobe-depth-cover.webp",
+      "originalWidth": 788,
+      "originalHeight": 1400,
+      "width": 619,
+      "height": 1100,
+      "bytes": 8298,
+      "sha256": "c8758f53aba84e3da933ba5cc2aba1a6fd2c38f379f65af1ccd9cc8b4870e612"
+    },
+    {
+      "source": "/assets/marquee/posters/ding4-marquee-motion.jpg",
+      "kind": "cover",
+      "usages": [
+        "orbital:gallery",
+        "orbital:poster"
+      ],
+      "output": "/assets/studio/ding4-marquee-motion-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 720,
+      "width": 1280,
+      "height": 720,
+      "bytes": 98254,
+      "sha256": "1b9457a44c4580ee12dc56a3cddbbf938f7098d3ccb2d5177ee54e47d7bdaf0a"
+    },
+    {
+      "source": "/assets/marquee/posters/skincare-ad-motion.jpg",
+      "kind": "cover",
+      "usages": [
+        "botanical:gallery",
+        "botanical:poster"
+      ],
+      "output": "/assets/studio/skincare-ad-motion-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 2229,
+      "width": 632,
+      "height": 1100,
+      "bytes": 41066,
+      "sha256": "99e8a74fb94e67294d90ad44eaf324dd28bfb34c2ca480afef6475664999fe97"
+    },
+    {
+      "source": "/assets/marquee/posters/tech-ecommerce-ad-motion.jpg",
+      "kind": "cover",
+      "usages": [
+        "tech-motion:gallery",
+        "tech-motion:poster"
+      ],
+      "output": "/assets/studio/tech-ecommerce-ad-motion-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 2229,
+      "width": 632,
+      "height": 1100,
+      "bytes": 31460,
+      "sha256": "00ec8098713399ac0cf6deb0e91107e6203a38cfe45d19947a7f376c1c02c610"
+    },
+    {
+      "source": "/assets/marquee/posters/spring-commercial-motion.jpg",
+      "kind": "cover",
+      "usages": [
+        "spring-motion:gallery",
+        "spring-motion:poster"
+      ],
+      "output": "/assets/studio/spring-commercial-motion-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 2276,
+      "width": 619,
+      "height": 1100,
+      "bytes": 98326,
+      "sha256": "8ea9f029b3b9d05a06d0fb59a09b979b108d1798bfbade3ca1f589cf56a15b9d"
+    },
+    {
+      "source": "/assets/marquee/posters/x3-poster-motion.jpg",
+      "kind": "cover",
+      "usages": [
+        "x3-motion:gallery",
+        "x3-motion:poster"
+      ],
+      "output": "/assets/studio/x3-poster-motion-cover.webp",
+      "originalWidth": 1280,
+      "originalHeight": 1280,
+      "width": 1100,
+      "height": 1100,
+      "bytes": 64070,
+      "sha256": "27467c0688df56beb7abc4c97c657587bd15daa2ecd44fa7e3220b6b2f4eb8ac"
+    },
+    {
+      "source": "/assets/project-vi-moxo-board.png",
+      "kind": "cover",
+      "usages": [
+        "moxo:gallery"
+      ],
+      "output": "/assets/studio/project-vi-moxo-board-cover.webp",
+      "originalWidth": 4407,
+      "originalHeight": 2480,
+      "width": 1400,
+      "height": 788,
+      "bytes": 68118,
+      "sha256": "3bae67d3dd0253252c33fc09d662efb95db684f460900d6dbbee353d243bcb7d"
+    },
+    {
+      "source": "/assets/project-vi-moxo-board.png",
+      "kind": "full",
+      "usages": [
+        "moxo:detail"
+      ],
+      "output": "/assets/studio/project-vi-moxo-board-full.webp",
+      "originalWidth": 4407,
+      "originalHeight": 2480,
+      "width": 1800,
+      "height": 1013,
+      "bytes": 97202,
+      "sha256": "3bae67d3dd0253252c33fc09d662efb95db684f460900d6dbbee353d243bcb7d"
+    },
+    {
+      "source": "/assets/project-vi-moxo-upgrade.jpg",
+      "kind": "full",
+      "usages": [
+        "moxo:detail"
+      ],
+      "output": "/assets/studio/project-vi-moxo-upgrade-full.webp",
+      "originalWidth": 4407,
+      "originalHeight": 23618,
+      "width": 1800,
+      "height": 9647,
+      "bytes": 1671010,
+      "sha256": "03871d20fedc5c3fcdd772d35d3a6621aad234bbb874cd4ac6592218c6742a95"
+    },
+    {
+      "source": "/assets/project-vi-youxin-identity-cover.jpg",
+      "kind": "cover",
+      "usages": [
+        "youxin:gallery"
+      ],
+      "output": "/assets/studio/project-vi-youxin-identity-cover-cover.webp",
+      "originalWidth": 1920,
+      "originalHeight": 1080,
+      "width": 1400,
+      "height": 788,
+      "bytes": 73756,
+      "sha256": "05cf6eae30e8f386fade0ed0121eb3adba39163b95ce2f5ebf22ab0e3d46afe7"
+    },
+    {
+      "source": "/assets/project-vi-youxin-identity-cover.jpg",
+      "kind": "full",
+      "usages": [
+        "youxin:detail"
+      ],
+      "output": "/assets/studio/project-vi-youxin-identity-cover-full.webp",
+      "originalWidth": 1920,
+      "originalHeight": 1080,
+      "width": 1800,
+      "height": 1013,
+      "bytes": 185500,
+      "sha256": "05cf6eae30e8f386fade0ed0121eb3adba39163b95ce2f5ebf22ab0e3d46afe7"
+    },
+    {
+      "source": "/assets/project-vi-youxin-upgrade.jpg",
+      "kind": "full",
+      "usages": [
+        "youxin:detail"
+      ],
+      "output": "/assets/studio/project-vi-youxin-upgrade-full.webp",
+      "originalWidth": 960,
+      "originalHeight": 28060,
+      "width": 547,
+      "height": 16000,
+      "bytes": 591594,
+      "sha256": "59feb0c56d305d7d03b30afff849ea53f6d1e741fb92e28cda72102c429d3fa3"
+    },
+    {
+      "source": "/assets/project-vi-take-your-time-hero.png",
+      "kind": "cover",
+      "usages": [
+        "take-your-time:gallery"
+      ],
+      "output": "/assets/studio/project-vi-take-your-time-hero-cover.webp",
+      "originalWidth": 1920,
+      "originalHeight": 1080,
+      "width": 1400,
+      "height": 788,
+      "bytes": 88146,
+      "sha256": "bdd1ef9d50456a2177f3b1d4c201317a6771d588ec63a44490c71cd5d965f5b2"
+    },
+    {
+      "source": "/assets/project-vi-take-your-time-hero.png",
+      "kind": "full",
+      "usages": [
+        "take-your-time:detail"
+      ],
+      "output": "/assets/studio/project-vi-take-your-time-hero-full.webp",
+      "originalWidth": 1920,
+      "originalHeight": 1080,
+      "width": 1800,
+      "height": 1013,
+      "bytes": 137376,
+      "sha256": "bdd1ef9d50456a2177f3b1d4c201317a6771d588ec63a44490c71cd5d965f5b2"
+    },
+    {
+      "source": "/assets/project-vi-take-your-time-upgrade.jpg",
+      "kind": "full",
+      "usages": [
+        "take-your-time:detail"
+      ],
+      "output": "/assets/studio/project-vi-take-your-time-upgrade-full.webp",
+      "originalWidth": 1920,
+      "originalHeight": 16420,
+      "width": 1800,
+      "height": 15394,
+      "bytes": 2493166,
+      "sha256": "b9d5ae1a6aed2242bc7800ce34dd67424213abb980a1e13b512f0bdc346e431d"
+    },
+    {
+      "source": "/assets/project-poster-xtep-wall-display.jpg",
+      "kind": "cover",
+      "usages": [
+        "xtep:gallery"
+      ],
+      "output": "/assets/studio/project-poster-xtep-wall-display-cover.webp",
+      "originalWidth": 14116,
+      "originalHeight": 4594,
+      "width": 1400,
+      "height": 456,
+      "bytes": 50268,
+      "sha256": "10ce293fe7a78bedd53c7a6c2c19b718cbcaec718311c8f144f8d5b01e0078b3"
+    },
+    {
+      "source": "/assets/project-poster-xtep-wall-display.jpg",
+      "kind": "full",
+      "usages": [
+        "xtep:detail"
+      ],
+      "output": "/assets/studio/project-poster-xtep-wall-display-full.webp",
+      "originalWidth": 14116,
+      "originalHeight": 4594,
+      "width": 1800,
+      "height": 586,
+      "bytes": 79392,
+      "sha256": "10ce293fe7a78bedd53c7a6c2c19b718cbcaec718311c8f144f8d5b01e0078b3"
+    },
+    {
+      "source": "/assets/project-poster-xtep-pop-set.jpg",
+      "kind": "full",
+      "usages": [
+        "xtep:detail"
+      ],
+      "output": "/assets/studio/project-poster-xtep-pop-set-full.webp",
+      "originalWidth": 1920,
+      "originalHeight": 7823,
+      "width": 1800,
+      "height": 7334,
+      "bytes": 960576,
+      "sha256": "8b19ccfc80c13c7d345ef72e06cd75a2086fb9a5dd1f79a61dfc597fa347aeb2"
+    },
+    {
+      "source": "/assets/project-poster-pet-promo.jpg",
+      "kind": "cover",
+      "usages": [
+        "pet-campaign:gallery"
+      ],
+      "output": "/assets/studio/project-poster-pet-promo-cover.webp",
+      "originalWidth": 990,
+      "originalHeight": 521,
+      "width": 990,
+      "height": 521,
+      "bytes": 61316,
+      "sha256": "f6e186df7960a13bf740ff3f63b0d3b4d4bd09eefae34d6e8c3a49629f9ead79"
+    },
+    {
+      "source": "/assets/project-poster-pet-promo.jpg",
+      "kind": "full",
+      "usages": [
+        "pet-campaign:detail"
+      ],
+      "output": "/assets/studio/project-poster-pet-promo-full.webp",
+      "originalWidth": 990,
+      "originalHeight": 521,
+      "width": 990,
+      "height": 521,
+      "bytes": 68580,
+      "sha256": "f6e186df7960a13bf740ff3f63b0d3b4d4bd09eefae34d6e8c3a49629f9ead79"
+    },
+    {
+      "source": "/assets/project-poster-illustration-packaging-set.jpg",
+      "kind": "full",
+      "usages": [
+        "pet-campaign:detail"
+      ],
+      "output": "/assets/studio/project-poster-illustration-packaging-set-full.webp",
+      "originalWidth": 1920,
+      "originalHeight": 8468,
+      "width": 1800,
+      "height": 7939,
+      "bytes": 705222,
+      "sha256": "563055d6158c048ddbcaf0d64e71b3d5d1fde414e4befd150c56f3a634eee381"
+    },
+    {
+      "source": "/assets/project-poster-xtep-opening.jpg",
+      "kind": "cover",
+      "usages": [
+        "tianwang:gallery"
+      ],
+      "output": "/assets/studio/project-poster-xtep-opening-cover.webp",
+      "originalWidth": 750,
+      "originalHeight": 422,
+      "width": 750,
+      "height": 422,
+      "bytes": 27366,
+      "sha256": "8eb4d1888e8bdff9de51963a788db41e3f4bbadc2d656f1ede70967790dab32d"
+    },
+    {
+      "source": "/assets/project-poster-xtep-opening.jpg",
+      "kind": "full",
+      "usages": [
+        "tianwang:detail"
+      ],
+      "output": "/assets/studio/project-poster-xtep-opening-full.webp",
+      "originalWidth": 750,
+      "originalHeight": 422,
+      "width": 750,
+      "height": 422,
+      "bytes": 30878,
+      "sha256": "8eb4d1888e8bdff9de51963a788db41e3f4bbadc2d656f1ede70967790dab32d"
+    },
+    {
+      "source": "/assets/project-poster-tianwang-ecommerce-set.jpg",
+      "kind": "full",
+      "usages": [
+        "tianwang:detail"
+      ],
+      "output": "/assets/studio/project-poster-tianwang-ecommerce-set-full.webp",
+      "originalWidth": 1920,
+      "originalHeight": 15567,
+      "width": 1800,
+      "height": 14594,
+      "bytes": 1436002,
+      "sha256": "86f03c9fe290290b3564726ce1c3c55fbb2d74c0f4e504c8e7e79db173be6de4"
+    },
+    {
+      "source": "/assets/project-ip-momo-bedtime.png",
+      "kind": "cover",
+      "usages": [
+        "momo:gallery"
+      ],
+      "output": "/assets/studio/project-ip-momo-bedtime-cover.webp",
+      "originalWidth": 1672,
+      "originalHeight": 941,
+      "width": 1400,
+      "height": 788,
+      "bytes": 51294,
+      "sha256": "7f6ad6c4a15612e16d93464a705c478c765211278afd7f187889a4a6f53232c6"
+    },
+    {
+      "source": "/assets/studio/momo-cow-actions.jpg",
+      "kind": "cover",
+      "usages": [
+        "momo:poster"
+      ],
+      "output": "/assets/studio/momo-cow-actions-cover.webp",
+      "originalWidth": 1600,
+      "originalHeight": 900,
+      "width": 1400,
+      "height": 788,
+      "bytes": 84838,
+      "sha256": "4adde41cf3f657a61987767d66edee426a530e515cd7afd825e86800164fbbc5"
+    },
+    {
+      "source": "/assets/project-ip-momo-upgrade.jpg",
+      "kind": "full",
+      "usages": [
+        "momo:detail"
+      ],
+      "output": "/assets/studio/project-ip-momo-upgrade-full.webp",
+      "originalWidth": 1920,
+      "originalHeight": 16420,
+      "width": 1800,
+      "height": 15394,
+      "bytes": 2328222,
+      "sha256": "73c1d9967149f89145fdd4491d9c14c9f1e1d239e98ce77a57f954038570397c"
+    },
+    {
+      "source": "/assets/workbench/lze-workbench-poster.webp",
+      "kind": "cover",
+      "usages": [
+        "lze-workbench:gallery",
+        "lze-workbench:poster"
+      ],
+      "output": "/assets/studio/lze-workbench-poster-cover.webp",
+      "originalWidth": 2560,
+      "originalHeight": 1440,
+      "width": 1400,
+      "height": 788,
+      "bytes": 54130,
+      "sha256": "5e05b6143abb9c67b41548590a3ad47f1fc24f9a4a03468af1aa795809995676"
+    },
+    {
+      "source": "/assets/workbench/screenshots/lze-workspace.png",
+      "kind": "full",
+      "usages": [
+        "lze-workbench:detail"
+      ],
+      "output": "/assets/studio/lze-workspace-full.webp",
+      "originalWidth": 1424,
+      "originalHeight": 1360,
+      "width": 1424,
+      "height": 1360,
+      "bytes": 255064,
+      "sha256": "a77d6439c86fc5e59995b25f6d9442243e4ba9748c317a76ef7aaa92a11c093f"
+    },
+    {
+      "source": "/assets/workbench/screenshots/lze-material-library.png",
+      "kind": "full",
+      "usages": [
+        "lze-workbench:detail"
+      ],
+      "output": "/assets/studio/lze-material-library-full.webp",
+      "originalWidth": 1424,
+      "originalHeight": 1360,
+      "width": 1424,
+      "height": 1360,
+      "bytes": 211426,
+      "sha256": "eca0cb531d9f9736f7e22fb18623829db7f27f0eb9685d0a4a613b8e59f2001f"
+    },
+    {
+      "source": "/assets/workbench/screenshots/lze-multi-image-editor.png",
+      "kind": "full",
+      "usages": [
+        "lze-workbench:detail"
+      ],
+      "output": "/assets/studio/lze-multi-image-editor-full.webp",
+      "originalWidth": 1424,
+      "originalHeight": 1360,
+      "width": 1424,
+      "height": 1360,
+      "bytes": 85454,
+      "sha256": "b7c1fbe621929320396982846f51c694332e28b5134180b730724c51a259f84a"
+    },
+    {
+      "source": "/assets/workbench/screenshots/lze-video-generation.png",
+      "kind": "full",
+      "usages": [
+        "lze-workbench:detail"
+      ],
+      "output": "/assets/studio/lze-video-generation-full.webp",
+      "originalWidth": 1424,
+      "originalHeight": 1360,
+      "width": 1424,
+      "height": 1360,
+      "bytes": 108680,
+      "sha256": "cefa7035ac0c67f11d7bf11074c8947981ad42d320c6d2cf9b68086eb7535c05"
+    },
+    {
+      "source": "/assets/workbench/screenshots/lze-motion-transfer.png",
+      "kind": "full",
+      "usages": [
+        "lze-workbench:detail"
+      ],
+      "output": "/assets/studio/lze-motion-transfer-full.webp",
+      "originalWidth": 1424,
+      "originalHeight": 1360,
+      "width": 1424,
+      "height": 1360,
+      "bytes": 98724,
+      "sha256": "06cd60f865c1f49be18ec204aac6d02d162be63d3ecb2bf49b2a941ceb7dd64c"
+    },
+    {
+      "source": "/assets/professional-portrait-cleaned.png",
+      "kind": "full",
+      "usages": [
+        "creator:portrait"
+      ],
+      "output": "/assets/studio/professional-portrait-cleaned-full.webp",
+      "originalWidth": 1086,
+      "originalHeight": 1448,
+      "width": 1086,
+      "height": 1448,
+      "bytes": 62308,
+      "sha256": "a54faf23e10937f2678c130bea2a3ffef5a97113f8d3084cc42b10ff30594413"
+    }
+  ],
+  "duplicates": [],
+  "pending": [
+    "个人简历 PDF",
+    "联系电话核实",
+    "项目职责与过程资料",
+    "正式连续场景影像"
+  ]
+}

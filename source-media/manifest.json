@@ -1,0 +1,69 @@
+{
+  "/assets/scene/curtain-opening-4k-v4/film.mp4": {
+    "size": 65245777,
+    "chunkSize": 8388608,
+    "parts": [
+      "/assets/deploy-chunks/ecede88fda718d535c13/0000.bin",
+      "/assets/deploy-chunks/ecede88fda718d535c13/0001.bin",
+      "/assets/deploy-chunks/ecede88fda718d535c13/0002.bin",
+      "/assets/deploy-chunks/ecede88fda718d535c13/0003.bin",
+      "/assets/deploy-chunks/ecede88fda718d535c13/0004.bin",
+      "/assets/deploy-chunks/ecede88fda718d535c13/0005.bin",
+      "/assets/deploy-chunks/ecede88fda718d535c13/0006.bin",
+      "/assets/deploy-chunks/ecede88fda718d535c13/0007.bin"
+    ],
+    "etag": "\"a0e4cf464c5723c985fd13aadf4e70390b71e58814eef225eb4399ebb0cb6a31\"",
+    "type": "video/mp4"
+  },
+  "/assets/scene/main-gallery-4k-v4/film.mp4": {
+    "size": 235877879,
+    "chunkSize": 8388608,
+    "parts": [
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0000.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0001.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0002.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0003.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0004.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0005.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0006.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0007.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0008.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0009.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0010.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0011.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0012.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0013.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0014.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0015.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0016.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0017.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0018.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0019.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0020.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0021.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0022.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0023.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0024.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0025.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0026.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0027.bin",
+      "/assets/deploy-chunks/70a0a4c4a693fbebff0a/0028.bin"
+    ],
+    "etag": "\"ed8d78e5ea4fe9401791cd93ae086b62d78675c91dd1a27339b8058b08e2756c\"",
+    "type": "video/mp4"
+  },
+  "/assets/scene/curtain-finale-4k-v4/film.mp4": {
+    "size": 47812364,
+    "chunkSize": 8388608,
+    "parts": [
+      "/assets/deploy-chunks/14a71f6d125e0038a2e3/0000.bin",
+      "/assets/deploy-chunks/14a71f6d125e0038a2e3/0001.bin",
+      "/assets/deploy-chunks/14a71f6d125e0038a2e3/0002.bin",
+      "/assets/deploy-chunks/14a71f6d125e0038a2e3/0003.bin",
+      "/assets/deploy-chunks/14a71f6d125e0038a2e3/0004.bin",
+      "/assets/deploy-chunks/14a71f6d125e0038a2e3/0005.bin"
+    ],
+    "etag": "\"912d1f4c89876a10cd1338af4471f0e031f41d54a50442ca378480550ef4f4ad\"",
+    "type": "video/mp4"
+  }
+}

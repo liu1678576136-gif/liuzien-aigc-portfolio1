@@ -88,7 +88,7 @@ export const seasonCarousel = {
       kicker: "Awakening",
       title: ["Spring", "生长"],
       subtitle: "以新生、轻盈和自然生命力，展开 AIGC 海报动态视觉的第一幕。",
-      src: "/assets/season-carousel/spring.mp4",
+      src: "/assets/season-carousel/jin-yi-wei-node-1.mp4",
       accent: "#7ee7b5",
     },
     {
@@ -98,7 +98,7 @@ export const seasonCarousel = {
       kicker: "Heat",
       title: ["Summer", "盛放"],
       subtitle: "更强的光照、更高的饱和度，让画面进入热烈、鲜明的商业视觉节奏。",
-      src: "/assets/season-carousel/summer.mp4",
+      src: "/assets/season-carousel/jin-yi-wei-node-1.mp4",
       accent: "#36c7ff",
     },
     {
@@ -108,7 +108,7 @@ export const seasonCarousel = {
       kicker: "Harvest",
       title: ["Autumn", "沉淀"],
       subtitle: "用稳定的构图与成熟色彩，把氛围、叙事和产品感收束成可交付画面。",
-      src: "/assets/season-carousel/autumn.mp4",
+      src: "/assets/season-carousel/jin-yi-wei-node-1.mp4",
       accent: "#ffb85c",
     },
     {
@@ -118,7 +118,7 @@ export const seasonCarousel = {
       kicker: "Silence",
       title: ["Winter", "冷境"],
       subtitle: "以克制、冷感和空间留白，完成四季动态海报的最后一段呼吸。",
-      src: "/assets/season-carousel/winter.mp4",
+      src: "/assets/season-carousel/jin-yi-wei-node-1.mp4",
       accent: "#8edcff",
     },
   ],

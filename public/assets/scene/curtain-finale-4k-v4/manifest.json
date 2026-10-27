@@ -1,0 +1,15 @@
+{
+  "source": "1x/尾幕.mp4",
+  "sourceWidth": 4288,
+  "sourceHeight": 2368,
+  "width": 3840,
+  "height": 2120,
+  "duration": 7.04,
+  "fps": 25,
+  "audio": "ignored",
+  "film": "film.mp4",
+  "poster": "poster.webp",
+  "closed": "closed.webp",
+  "keyframeInterval": 6,
+  "crf": 16
+}
