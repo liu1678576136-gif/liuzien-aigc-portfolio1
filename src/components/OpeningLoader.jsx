@@ -7,7 +7,7 @@ export default function OpeningLoader({ onComplete }) {
   const { t, language } = useLocale();
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
-    let disposed = false, exitTimer;
+    let disposed = false, exitTimer, firstVideo, firstFrameReady;
     const overflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
     const preventScroll = event => event.preventDefault();
@@ -26,7 +26,14 @@ export default function OpeningLoader({ onComplete }) {
     let minimumTimer, maximumTimer;
     const minimum = new Promise(resolve => { minimumTimer = setTimeout(resolve, 1800); });
     const maximum = new Promise(resolve => { maximumTimer = setTimeout(resolve, 8000); });
-    const prepared = Promise.all([Promise.all(Array.from({ length: 4 }, preload)), document.fonts.ready]);
+    const motion = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const videoReady = new Promise(resolve => {
+      firstVideo = document.querySelector("video[data-opening-video='true']");
+      if (!motion || !firstVideo || firstVideo.dataset.firstFrame === "true" || firstVideo.readyState >= 2) { resolve(); return; }
+      firstFrameReady = () => resolve();
+      firstVideo.addEventListener("scroll-video-frame", firstFrameReady, { once: true });
+    });
+    const prepared = Promise.all([preload(), document.fonts.ready, videoReady]);
     Promise.all([minimum, Promise.race([prepared, maximum])]).then(() => {
       if (disposed) return;
       clearTimeout(maximumTimer);
@@ -36,6 +43,7 @@ export default function OpeningLoader({ onComplete }) {
     return () => {
       disposed = true;
       clearTimeout(minimumTimer); clearTimeout(maximumTimer); clearTimeout(exitTimer);
+      firstVideo?.removeEventListener("scroll-video-frame", firstFrameReady);
       document.documentElement.style.overflow = overflow;
       window.removeEventListener("wheel", preventScroll);
       window.removeEventListener("touchmove", preventScroll);

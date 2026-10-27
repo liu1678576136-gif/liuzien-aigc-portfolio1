@@ -24,7 +24,13 @@ async function walk(directory) {
 collect([creator, works, characterImages, characterWebShowcase, characterVideos]);
 collect(["/assets/scene/studio-screen-loop.mp4", "/assets/scene/studio-screen-poster.webp", "/assets/audio/evening-breeze-v4-vocals.mp3", "/assets/audio/evening-breeze-v3-comparison.mp3"]);
 for (const base of [curtainScenes.openingVideoBase, mainVideo.base, curtainScenes.finaleBase]) {
-  for (const file of await walk(join(output, base))) collect("/" + relative(output, file).split(sep).join("/"));
+  const stream = JSON.parse(await readFile(join(output, base, "stream/stream.json"), "utf8"));
+  const streamFiles = new Set(["stream.json", stream.init, stream.playlist, ...stream.segments.map(part => part.file)]);
+  for (const file of await walk(join(output, base))) {
+    const url = "/" + relative(output, file).split(sep).join("/");
+    if (url.startsWith(base + "stream/") && !streamFiles.has(url.slice((base + "stream/").length))) continue;
+    if (url !== base + "film.mp4") collect(url);
+  }
 }
 for (const file of [join(output, "index.html"), ...await walk(assets)]) {
   if (!/\.(js|css|html)$/.test(file)) continue;
@@ -46,4 +52,4 @@ const bytes = (await Promise.all(published.map(file => stat(file)))).reduce((sum
 if (bytes >= 1000000000) throw new Error("Build exceeds GitHub Pages 1 GB site limit");
 await mkdir("outputs", { recursive: true });
 await writeFile("outputs/static-media.json", JSON.stringify([...required].filter(url => !/\.(js|css)$/.test(url)), null, 2));
-console.log(`High-quality static build: ${published.length} assets, ${(bytes / 1048576).toFixed(1)} MiB; ${excluded} unused assets excluded. Original video, audio, images and PDF bytes retained.`);
+console.log(`High-quality static build: ${published.length} assets, ${(bytes / 1048576).toFixed(1)} MiB; ${excluded} unused assets excluded. Scroll films losslessly segmented; portfolio media retained.`);

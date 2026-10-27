@@ -23,8 +23,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Check scroll seeking and recovery
+        run: node --test scripts/test-scroll-video.mjs
       - run: npm run build:pages
-      - name: Verify original media bytes
+      - name: Verify original media and lossless scroll streams
         run: node scripts/verify-static-build.mjs
       - uses: actions/upload-pages-artifact@v4
         with:

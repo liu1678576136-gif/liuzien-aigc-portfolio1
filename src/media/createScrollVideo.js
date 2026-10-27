@@ -1,5 +1,7 @@
+import { createFragmentedVideo } from "./createFragmentedVideo.js";
 // Decode filmed scenes at video resolution instead of downsampling through canvas.
 export function createScrollVideo(video, { fps = 25, timeAtProgress = (progress, duration) => progress * duration, onFrame = () => {} } = {}) {
+  if (video.dataset.streamSrc) return createFragmentedVideo(video, { fps, timeAtProgress, onFrame });
   let wanted = 0, enabled = false, disposed = false;
   let warmed = video.preload !== "none";
   const seek = () => {

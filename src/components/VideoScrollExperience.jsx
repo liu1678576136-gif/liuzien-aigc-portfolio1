@@ -2,6 +2,7 @@ import { useLocale } from "../LocaleContext.jsx";
 import { useEffect, useRef } from "react";
 import "../video-scroll.css";
 import CurtainFinale from "./CurtainFinale.jsx";
+import VideoLoadStatus from "./VideoLoadStatus.jsx";
 import ChapterNavigation from "./ChapterNavigation.jsx";
 import SceneSurroundDim from "./SceneSurroundDim.jsx";
 import SceneAtmosphere from "./SceneAtmosphere.jsx";
@@ -277,7 +278,7 @@ export default function VideoScrollExperience({ onPanel, onBrowse, reduced, paus
       {visibleClips.map((clip, index) => <div key={clip} className={`video-scroll-layer video-scroll-layer-${index}`}>
         <img src={scenePoster(clip, index)} loading={index >= 2 ? "lazy" : "eager"} alt={t(["舞台红幕徐徐开启", "红色展廊与海报作品", "暖光工作台与闭合画册", "从暖光书房转入摄影棚电脑工作站"][index])} />
         {index === 0 || joinedTest
-          ? <video ref={index === 0 ? first : second} src={`${index === 0 ? curtainScenes.openingVideoBase : mainVideo.base}film.mp4`} poster={scenePoster(clip, index)} preload={index === 0 ? "auto" : "none"} muted playsInline disablePictureInPicture aria-hidden="true" />
+          ? <video ref={index === 0 ? first : second} data-stream-src={`${index === 0 ? curtainScenes.openingVideoBase : mainVideo.base}stream/stream.json`} data-opening-video={index === 0 ? "true" : undefined} poster={scenePoster(clip, index)} preload={index === 0 ? "auto" : "none"} muted playsInline disablePictureInPicture aria-hidden="true" />
           : <canvas ref={[first, second, third, fourth][index]} aria-hidden="true" />}
       </div>)}
       <div className="video-edge-blur" aria-hidden="true" />
@@ -312,6 +313,7 @@ export default function VideoScrollExperience({ onPanel, onBrowse, reduced, paus
       <div className="video-scroll-meter" />
       <div className="portfolio-vignette" aria-hidden="true" />
       {joinedTest && <CurtainFinale onPanel={onPanel} />}
+      <VideoLoadStatus />
     </div>
   </section>;
 }

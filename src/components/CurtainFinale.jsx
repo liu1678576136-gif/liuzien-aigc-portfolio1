@@ -1,6 +1,7 @@
 import { useLocale } from "../LocaleContext.jsx";
 import { useEffect, useRef } from "react";
 import { curtainScenes } from "../data/curtainScenes.js";
+import { createScrollVideo } from "../media/createScrollVideo.js";
 
 const base = curtainScenes.finaleBase;
 
@@ -10,19 +11,11 @@ export default function CurtainFinale({ onPanel }) {
   useEffect(() => {
     const layer = root.current, video = film.current;
     const track = layer.closest(".video-scroll-track");
-    let warmed = false, failed = false, decoded = false, wanted = 0;
+    let failed = false, decoded = false;
     const clamp = n => Math.max(0, Math.min(1, n));
-    const seek = () => {
-      if (!video.readyState || video.seeking || !Number.isFinite(video.duration)) return;
-      // Serialize seeks and retain the newest scroll target during decoding.
-      const target = Math.min(wanted, Math.max(0, video.duration - 1 / 25));
-      if (Math.abs(video.currentTime - target) > 1 / 48) video.currentTime = target;
-    };
+    const controller = createScrollVideo(video);
     const sync = () => {
       const active = track.dataset.finaleActive === "true";
-      if (!warmed && (track.dataset.sceneNode === "rooms" || active)) {
-        warmed = true; video.preload = "auto"; video.load();
-      }
       if (track.dataset.effectsPaused === "true") return;
       const progress = active ? clamp(Number(track.dataset.finaleProgress || 0)) : 0;
       // This is a scroll timeline, not elapsed wall-clock time.
@@ -35,8 +28,7 @@ export default function CurtainFinale({ onPanel }) {
       video.pause();
       // Fit the supplied film to the existing scroll span, including reverse
       // scrolling, so a shorter replacement does not freeze before the end.
-      wanted = clamp((time - 1.8) / (11 - 1.8)) * (Number.isFinite(video.duration) ? video.duration : 0);
-      seek();
+      controller.update(clamp((time - 1.8) / (11 - 1.8)), active || track.dataset.sceneNode === "rooms");
       layer.inert = !active;
       layer.setAttribute("aria-hidden", String(!active));
       layer.style.setProperty("--finale-black", visibleTime < .8 ? visibleTime / .8 : visibleTime < 1 ? 1 : Math.max(0, 1 - (visibleTime - 1) / .8));
@@ -58,19 +50,19 @@ export default function CurtainFinale({ onPanel }) {
     observer.observe(track, { attributes: true, attributeFilter: ["data-finale-active", "data-finale-progress", "data-scene-node", "data-effects-paused"] });
     video.addEventListener("error", error);
     video.addEventListener("loadeddata", sync);
-    video.addEventListener("seeked", seek);
+    video.addEventListener("scroll-video-frame", sync);
     sync();
     return () => {
       observer.disconnect();
       video.removeEventListener("error", error);
       video.removeEventListener("loadeddata", sync);
-      video.removeEventListener("seeked", seek);
-      video.pause();
+      video.removeEventListener("scroll-video-frame", sync);
+      controller.dispose();
     };
   }, []);
   return <div ref={root} className="curtain-finale" inert aria-hidden="true">
     <div className="curtain-finale-media">
-      <video ref={film} src={`${base}film.mp4`} poster={`${base}poster.webp`} preload="none" muted playsInline disablePictureInPicture aria-label={t("深红幕布缓缓合拢")} />
+      <video ref={film} data-stream-src={`${base}stream/stream.json`} poster={`${base}poster.webp`} preload="none" muted playsInline disablePictureInPicture aria-label={t("深红幕布缓缓合拢")} />
       <img className="curtain-finale-fallback" src={`${base}closed.webp`} alt={t("完全闭合的深红舞台幕布")} />
     </div>
     <div className="curtain-finale-black" />
