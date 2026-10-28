@@ -26,7 +26,7 @@ for (const base of [curtainScenes.openingVideoBase, mainVideo.base, curtainScene
   originalBytes += (await stat(source)).size;
   const destination = join(root, "public", base, scrollStreamDirectory), variants = [];
   for (const profile of scrollStreamProfiles) {
-    const cache = join(root, "outputs/scroll-streams", `${sourceHash}-${profile.id}-${profile.crf}-web-v3`);
+    const cache = join(root, "outputs/scroll-streams", `${sourceHash}-${profile.id}-${profile.crf}-web-v${profile.cacheVersion}`);
     let manifest;
     try { manifest = JSON.parse(await readFile(join(cache, "stream.json"), "utf8")); if (!manifest.sourceTimelineSha256) throw new Error("Missing timeline proof"); }
     catch {
@@ -37,7 +37,7 @@ for (const base of [curtainScenes.openingVideoBase, mainVideo.base, curtainScene
       console.log(`Encoding ${profile.codec.toUpperCase()} CRF${profile.crf}, ${width}×${height}: ${base}`);
       const encoder = profile.codec === "hevc"
         ? ["-c:v", "libx265", "-crf", String(profile.crf), "-tag:v", "hvc1", "-x265-params", `keyint=${keyframes}:min-keyint=${keyframes}:scenecut=0:open-gop=0:bframes=0:repeat-headers=0:pools=4:frame-threads=2:log-level=error`]
-        : ["-c:v", "libx264", "-crf", String(profile.crf), "-maxrate", "8M", "-bufsize", "8M", "-keyint_min", String(keyframes), "-sc_threshold", "0", "-threads", "4"];
+        : ["-c:v", "libx264", "-crf", String(profile.crf), "-keyint_min", String(keyframes), "-sc_threshold", "0", "-threads", "4"];
       await command(["-v", "error", "-y", "-i", source, "-map", "0:v:0", "-an", "-vf", `scale=${width}:${height}:flags=lanczos,setsar=1`, ...encoder, "-preset", "medium", "-g", String(keyframes), "-bf", "0", "-pix_fmt", "yuv420p", "-fps_mode", "passthrough", "-video_track_timescale", String(original.fps * 512), "-movflags", "+faststart", optimized]);
       await run(ffmpeg, ["-v", "error", "-y", "-i", optimized, "-map", "0:v:0", "-an", "-c:v", "copy", ...(profile.codec === "hevc" ? ["-tag:v", "hvc1"] : []), "-f", "dash", "-seg_duration", "0.2", "-use_timeline", "1", "-use_template", "1", "-init_seg_name", "init.mp4", "-media_seg_name", "part-$Number%05d$.m4s", "stream.mpd"], { cwd: cache, windowsHide: true, maxBuffer: 10000000 });
       const mpd = await readFile(join(cache, "stream.mpd"), "utf8"), template = /<SegmentTemplate\b[^>]+>/.exec(mpd)[0];

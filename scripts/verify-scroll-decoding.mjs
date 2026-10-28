@@ -5,7 +5,7 @@ import { join } from "node:path";
 import ffmpeg from "ffmpeg-static";
 import { curtainScenes } from "../src/data/curtainScenes.js";
 import { mainVideo } from "../src/data/mainVideo.js";
-import { scrollStreamDirectory } from "../src/data/scrollMedia.js";
+import { scrollStreamDirectory, scrollStreamProfiles } from "../src/data/scrollMedia.js";
 const decode = (args, input) => {
   const output = execFileSync(ffmpeg, ["-v", "error", ...args, "-map", "0:v:0", "-frames:v", "1", "-f", "framemd5", "-"], { input, encoding: "utf8", maxBuffer: 10000000, windowsHide: true });
   const row = output.split(/\r?\n/).find(line => /^0,/.test(line));
@@ -20,7 +20,8 @@ for (const base of [curtainScenes.openingVideoBase, mainVideo.base, curtainScene
     const manifest = JSON.parse(await readFile(join(directory, variant.url), "utf8"));
     const files = join(directory, variant.codec);
     const init = await readFile(join(files, manifest.init));
-    const reference = join("outputs/scroll-streams", `${manifest.sourceSha256}-${manifest.codec}-${manifest.crf}-web-v3`, "web.mp4");
+    const profile = scrollStreamProfiles.find(item => item.codec === manifest.codec);
+    const reference = join("outputs/scroll-streams", `${manifest.sourceSha256}-${manifest.codec}-${manifest.crf}-web-v${profile.cacheVersion}`, "web.mp4");
     for (const index of [0, Math.floor(manifest.segments.length / 2), manifest.segments.length - 1]) {
       const part = manifest.segments[index];
       const frame = decode(["-i", "pipe:0"], Buffer.concat([init, await readFile(join(files, part.file))]));

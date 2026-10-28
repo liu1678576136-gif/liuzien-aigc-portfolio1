@@ -39,7 +39,7 @@ npm run build:local
 
 ## 高画质部署
 
-运行 `npm run build` 生成部署包，`npm run build:pages` 额外适配 GitHub Pages 路径。只压缩三个滚动背景；作品图片、完整视频、音轨和品牌手册的原文件保留。背景同时生成 2K HEVC 和 1080p AVC 的 MSE / HLS 片段，浏览器只加载可用的一个版本。原背景约 332.8 MiB，HEVC 版本约 90.4 MiB，AVC 约 52.9 MiB；完整发布包约 491 MiB。首次构建会编码，后续复用忽略目录中的缓存。
+运行 `npm run build` 生成部署包，`npm run build:pages` 额外适配 GitHub Pages 路径。只压缩三个滚动背景；作品图片、完整视频、音轨和品牌手册的原文件保留。背景同时生成 2K HEVC 和 1080p AVC 的 MSE / HLS 片段，浏览器只加载可用的一个版本。原背景约 332.8 MiB，HEVC 版本约 90.4 MiB，AVC 约 81.8 MiB；完整发布包约 520 MiB。AVC 保留 CRF21 恒定质量，不再用过紧的码率上限损失强光转场细节。首次构建会编码，后续复用忽略目录中的缓存。
 
 `node scripts/verify-static-build.mjs` 核对发布文件和原始素材，`node scripts/verify-scroll-decoding.mjs` 真正解码首、中、末片段核对定位。`node --test scripts/test-scroll-video.mjs scripts/test-portfolio-routes.mjs` 检查定位、格式选择与子页面路由；`node scripts/test-work-pages.mjs` 渲染作品页，确认未挂载滚动背景。
 
