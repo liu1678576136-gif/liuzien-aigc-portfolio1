@@ -1,0 +1,20 @@
+.portfolio-work-page { min-height: 100dvh; background: #111312; color: var(--paper); }
+.portfolio-work-page .studio-header { border-bottom: 1px solid #ffffff12; }
+.portfolio-work-page .cinema-header-actions { position: static; left: auto; transform: none; display: flex; align-items: center; gap: 24px; }
+.portfolio-work-page .work-card-button { display: block; }
+.work-page-main { padding-top: 114px; }
+.work-page-bar { display: flex; align-items: center; gap: 30px; min-height: 64px; padding-block: 14px; border-bottom: 1px solid var(--line); font-size: 12px; }
+.work-page-bar > :first-child { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; }
+.work-page-bar > :nth-child(2) { display: inline-flex; align-items: center; gap: 9px; margin-left: auto; color: #c9a594; }
+.work-page-bar > :last-child { min-height: 40px; display: inline-flex; align-items: center; border-bottom: 1px solid #ffffff35; }
+.work-page-a11y-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.portfolio-work-page .work-index { padding-top: 48px; padding-bottom: 64px; }
+.work-page-project { padding-inline: max(7%, calc((100vw - 1300px) / 2)); }
+.work-page-colophon { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-block: 32px; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--display); font-size: 10px; letter-spacing: .08em; }
+.work-page-missing { min-height: 55vh; display: grid; align-content: center; justify-items: start; gap: 28px; }
+.work-page-missing h2 { font-size: clamp(28px, 5vw, 64px); font-weight: 400; }
+@media (max-width: 600px) {
+  .work-page-main { padding-top: 94px; }
+  .work-page-bar { gap: 16px; font-size: 11px; }
+  .work-page-project { padding-inline: 5.3%; }
+}

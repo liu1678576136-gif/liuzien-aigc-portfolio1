@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { createFragmentedVideo, containsTime, segmentAt } from "../src/media/createFragmentedVideo.js";
+import { createFragmentedVideo, containsTime, segmentAt, selectStreamVariant } from "../src/media/createFragmentedVideo.js";
 
 const settle = async () => { for (let i = 0; i < 12; i++) await new Promise(resolve => setImmediate(resolve)); };
 const ranges = values => ({ length: values.length, start: i => values[i][0], end: i => values[i][1] });
-function harness({ delayed = [], failures = [], native = false } = {}) {
+function harness({ delayed = [], failures = [], native = false, master } = {}) {
   const saved = { fetch: globalThis.fetch, document: globalThis.document, MediaSource: globalThis.MediaSource, create: URL.createObjectURL, revoke: URL.revokeObjectURL };
   const requests = [], revoked = [], sources = new Map();
   const manifest = { version: 1, duration: 10, mime: 'video/mp4; codecs="avc1.640033"', init: "init.mp4", playlist: "stream.m3u8", segments: Array.from({ length: 20 }, (_, i) => ({ file: `part-${i}.m4s`, start: i / 2, end: (i + 1) / 2 })) };
@@ -36,7 +36,7 @@ function harness({ delayed = [], failures = [], native = false } = {}) {
     }
   }
   class MediaSource extends EventTarget {
-    static isTypeSupported() { return true; }
+    static isTypeSupported(mime) { return !mime.includes("hvc1"); }
     constructor() { super(); this.buffer = null; }
     addSourceBuffer() { return this.buffer = new SourceBuffer(); }
     set duration(value) { video.duration = value; }
@@ -65,7 +65,7 @@ function harness({ delayed = [], failures = [], native = false } = {}) {
   globalThis.fetch = async (url, { signal } = {}) => {
     const path = new URL(url).pathname, index = /part-(\d+)/.exec(path)?.[1];
     requests.push({ path, signal });
-    if (path.endsWith("stream.json")) return { ok: true, json: async () => manifest };
+    if (path.endsWith("stream.json")) return { ok: true, json: async () => master && path === "/repo/stream/stream.json" ? master : manifest };
     if (index !== undefined && delayed.includes(Number(index))) return new Promise((_, reject) => signal.addEventListener("abort", () => reject(new Error("aborted")), { once: true }));
     if (index !== undefined && failures.includes(Number(index))) return { ok: false, status: 503 };
     return { ok: true, arrayBuffer: async () => Uint8Array.of(index === undefined ? 255 : Number(index) + 1).buffer };
@@ -79,13 +79,42 @@ test("segment boundaries select the next independent segment", () => {
   const segments = [{ start: 0, end: .24 }, { start: .24, end: .48 }, { start: .48, end: .6 }];
   assert.equal(segmentAt(segments, 0), 0); assert.equal(segmentAt(segments, .24), 1); assert.equal(segmentAt(segments, .599), 2);
 });
-test("initial load fetches only neighboring original-quality fragments", async () => {
+test("initial load fetches only neighboring video fragments", async () => {
   const h = harness();
   try {
     h.controller.update(0, true); await settle();
     assert.equal(h.video.dataset.firstFrame, "true"); assert.equal(h.video.dataset.buffering, "false");
     assert.deepEqual(h.requests.filter(r => r.path.includes("part-")).map(r => r.path), ["/repo/stream/part-0.m4s", "/repo/stream/part-1.m4s"]);
     assert(!h.requests.some(r => r.path.includes("film.mp4")));
+  } finally { h.restore(); }
+});
+const variants = [
+  { url: "hevc/stream.json", codec: "hevc", mime: 'video/mp4; codecs="hvc1.1.6.L120.90"', width: 2490, height: 1440, bitrate: 10000000, fps: 30 },
+  { url: "avc/stream.json", codec: "avc", mime: 'video/mp4; codecs="avc1.640028"', width: 1868, height: 1080, bitrate: 8000000, fps: 30 },
+];
+const noNative = { canPlayType: () => "" };
+test("hardware-supported 2K HEVC is preferred", async () => {
+  assert.equal((await selectStreamVariant(variants, noNative, { mediaSource: { isTypeSupported: () => true }, capabilities: { decodingInfo: async () => ({ supported: true, smooth: true, powerEfficient: true }) } })).codec, "hevc");
+});
+test("unsupported or inefficient HEVC automatically selects AVC", async () => {
+  assert.equal((await selectStreamVariant(variants, noNative, { mediaSource: { isTypeSupported: mime => mime.includes("avc1") }, capabilities: null })).codec, "avc");
+  assert.equal((await selectStreamVariant(variants, noNative, { mediaSource: { isTypeSupported: () => true }, capabilities: { decodingInfo: async () => ({ supported: true, smooth: false, powerEfficient: false }) } })).codec, "avc");
+});
+test("native HEVC HLS remains available without MediaSource", async () => {
+  assert.equal((await selectStreamVariant(variants, { canPlayType: () => "probably" }, { mediaSource: null, capabilities: null })).codec, "hevc");
+});
+test("a stalled HEVC hardware query cannot block the opening scene", async () => {
+  const variant = await selectStreamVariant(variants, noNative, { mediaSource: { isTypeSupported: () => true }, capabilities: { decodingInfo: () => new Promise(() => {}) }, capabilityTimeoutMs: 5 });
+  assert.equal(variant.codec, "avc");
+});
+test("master selection downloads only the playable variant", async () => {
+  const h = harness({ master: { version: 2, variants } });
+  try {
+    h.controller.update(0, true); await settle();
+    assert.equal(h.video.dataset.firstFrame, "true");
+    assert(h.requests.some(r => r.path === "/repo/stream/avc/stream.json"));
+    assert(h.requests.some(r => r.path === "/repo/stream/avc/part-0.m4s"));
+    assert(!h.requests.some(r => r.path.includes("/hevc/")));
   } finally { h.restore(); }
 });
 test("a newer scroll position replaces an obsolete unbuffered seek", async () => {

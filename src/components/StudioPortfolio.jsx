@@ -1,5 +1,5 @@
 import { useLocale } from "../LocaleContext.jsx";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowUp, ArrowUpRight, Check, Copy, Expand, Mail, Play, X } from "lucide-react";
 import { usePortfolioData } from "../LocaleContext.jsx";
 import LanguageMenu from "./LanguageMenu.jsx";
@@ -14,16 +14,18 @@ import StudioCursor from "./StudioCursor.jsx";
 import CharacterGallery from "./CharacterGallery.jsx";
 import ProjectProcess from "./ProjectProcess.jsx";
 import { motionCollections } from "../data/videoWorks.js";
+import { panelRoute, portfolioHash } from "../data/portfolioRoutes.js";
+import "../work-page.css";
 
-function Header({ onPanel }) {
+function Header({ onPanel, onHome }) {
   const { t, language } = useLocale();
   return <header className="studio-header">
-    <a className="studio-wordmark" href="#home" aria-label={t("刘梓恩作品集首页")} onClick={(event) => { event.preventDefault(); jumpToCinematicChapter("opening"); }}><span className="lz-monogram">LZ<span>·</span></span><span className="wordmark-caption">{t("刘梓恩")}<br /><small>VISUAL DESIGNER</small></span></a>
+    <a className="studio-wordmark" href="#home" aria-label={t("刘梓恩作品集首页")} onClick={(event) => { event.preventDefault(); if (onHome) onHome(); else jumpToCinematicChapter("opening"); }}><span className="lz-monogram">LZ<span>·</span></span><span className="wordmark-caption">{t("刘梓恩")}<br /><small>VISUAL DESIGNER</small></span></a>
     <nav className="cinema-header-actions" aria-label={t("主导航")}><BackgroundMusic /><LanguageMenu /><button className="cinema-menu-trigger" onClick={() => onPanel("menu")} aria-label={t("打开菜单")}><span /><span /><span /></button></nav>
   </header>;
 }
 
-function WorkIndex({ onOpen, initialCategory = "all", categoryOnly = false }) {
+function WorkIndex({ onOpen, initialCategory = "all", categoryOnly = false, workHref }) {
   const { categories, works } = usePortfolioData();
   const { t, language } = useLocale();
   const [filter, setFilter] = useState(initialCategory);
@@ -41,11 +43,12 @@ function WorkIndex({ onOpen, initialCategory = "all", categoryOnly = false }) {
   const grouped = selectedCategory === "motion";
   const renderWorks = (items) => {
     const Title = grouped ? "h4" : "h3";
+    const Card = workHref ? "a" : "button";
     return <div className="work-grid">{items.map((work) => <article className={`work-card work-card-${work.category}`} key={work.id}>
-      <button className="work-card-button" onClick={() => onOpen(work.id)} aria-label={t(`查看${work.title}`)}>
+      <Card className="work-card-button" href={workHref?.(work.id)} onClick={event => { if (workHref && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0)) return; event.preventDefault(); onOpen(work.id); }} aria-label={t(`查看${work.title}`)}>
         <div className="work-card-image"><Artwork src={work.cover} original={work.coverOriginal} alt={work.title} /><span className="card-type">{work.category === "motion" ? <><Play size={10} fill="currentColor" /> FILM</> : work.categoryLabel}</span><span className="card-open"><ArrowUpRight size={25} strokeWidth={1.2} /></span></div>
         <div className="work-card-caption"><span className="work-number">{work.number}</span><div><Title>{work.title}</Title><p>{work.subtitle}</p>{work.production && <span className="work-card-process">{t("查看制作过程")}<ArrowUpRight size={12} /></span>}</div><ArrowUpRight size={18} /></div>
-      </button>
+      </Card>
     </article>)}</div>;
   };
   return <section id="works" className={`work-index section-shell${categoryOnly ? " work-index-category" : ""}`} aria-labelledby="works-title">
@@ -148,7 +151,7 @@ function ProjectDetail({ work, onClose }) {
   </dialog>;
 }
 
-function SitePanel({ kind, onClose, onPanel, onOpen, initialCategory = "all" }) {
+function SitePanel({ kind, onClose, onPanel, onOpen, onHome, initialCategory = "all" }) {
   const { creator, works } = usePortfolioData();
   const { t, language } = useLocale();
   const dialog = useRef(null);
@@ -168,21 +171,60 @@ function SitePanel({ kind, onClose, onPanel, onOpen, initialCategory = "all" }) 
   }, []);
   return <dialog ref={dialog} className={`site-panel site-panel-${kind}`} aria-label={t(labels[kind])} onClick={(event) => { if (kind !== "menu" || event.target !== event.currentTarget) return; const box = event.currentTarget.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) onClose(); }} onCancel={(event) => { event.preventDefault(); onClose(); }}>
     <div className="site-panel-toolbar"><span>{t(kind === "menu" ? "刘梓恩" : `LIU ZIEN / ${t(labels[kind])}`)}</span><button className={kind === "menu" ? undefined : "site-panel-back"} onClick={onClose} aria-label={t(kind === "menu" ? "关闭导航菜单" : "返回沉浸场景")}>{kind === "menu" ? <X size={26} strokeWidth={1.5} /> : <><ArrowLeft size={18} strokeWidth={1.6} /><span>{t("返回场景")}</span></>}</button></div>
-    <div className={`site-panel-scroll${directWork ? " detail-scroll single-project-scroll" : ""}`} onClick={(event) => { const anchor = event.target.closest('a[href="#home"]'); if (anchor) { event.preventDefault(); onClose(); requestAnimationFrame(() => jumpToCinematicChapter("opening")); } }}>
+    <div className={`site-panel-scroll${directWork ? " detail-scroll single-project-scroll" : ""}`} onClick={(event) => { const anchor = event.target.closest('a[href="#home"]'); if (anchor) { event.preventDefault(); onClose(); if (onHome) onHome(); else requestAnimationFrame(() => jumpToCinematicChapter("opening")); } }}>
       {directWork ? <ProjectBody work={directWork} onClose={onClose} onPreview={setPreview} titleId="panel-project-title" returnToScene /> : (kind === "works" || exclusiveCategory) && <WorkIndex onOpen={onOpen} initialCategory={exclusiveCategory || initialCategory} categoryOnly={Boolean(exclusiveCategory)} />}
       {kind === "characters" && <CharacterGallery onPreview={setPreview} />}
       {kind === "about" && <About />}
       {kind === "contact" && <Contact />}
-      {kind === "menu" && <><nav className="cinema-main-menu" aria-label={t("网站菜单")}>{[{ id: "home", label: "从头开始" }, { id: "works", label: "全部作品" }, { id: "about", label: "关于刘梓恩" }, { id: "contact", label: "联系" }].map((item) => <button key={item.id} onClick={() => { if (item.id === "home") { onClose(); requestAnimationFrame(() => jumpToCinematicChapter("opening")); } else onPanel(item.id); }}><strong>{t(item.label)}</strong></button>)}</nav><div className="cinema-menu-note"><span>AIGC / VISUAL DESIGN</span><p>{t("让想象，走进现实。")}</p><a href={`mailto:${creator.email}`}>{creator.email} <ArrowUpRight size={14} /></a></div></>}
+      {kind === "menu" && <><nav className="cinema-main-menu" aria-label={t("网站菜单")}>{[{ id: "home", label: "从头开始" }, { id: "works", label: "全部作品" }, { id: "about", label: "关于刘梓恩" }, { id: "contact", label: "联系" }].map((item) => <button key={item.id} onClick={() => { if (item.id === "home") { onClose(); if (onHome) onHome(); else requestAnimationFrame(() => jumpToCinematicChapter("opening")); } else onPanel(item.id); }}><strong>{t(item.label)}</strong></button>)}</nav><div className="cinema-menu-note"><span>AIGC / VISUAL DESIGN</span><p>{t("让想象，走进现实。")}</p><a href={`mailto:${creator.email}`}>{creator.email} <ArrowUpRight size={14} /></a></div></>}
     </div>
     {preview && <Lightbox media={preview} onClose={() => setPreview(null)} />}
   </dialog>;
 }
 
-export default function StudioPortfolio() {
+export function WorkPage({ route, onNavigate, onBack, onHome, onRestart = onHome }) {
+  const { works, workById } = usePortfolioData();
+  const { t, language } = useLocale();
+  const [panel, setPanel] = useState(null), [preview, setPreview] = useState(null);
+  const title = useRef(null);
+  const work = route.kind === "work" ? workById[route.id] : null;
+  const category = route.category || "all";
+  const pageTitle = work?.title || (route.kind === "work" ? (language === "en" ? "Project not found" : "未找到这件作品") : route.kind === "characters" ? t("视觉叙事") : t(({ all: "全部作品", poster: "电商海报", brand: "VI / IP 设计", ip: "IP 设计", other: "LZE工作台", motion: "AI 影像" })[category]));
+  useEffect(() => {
+    const previous = document.title;
+    document.title = `${pageTitle} / LIU ZIEN`;
+    title.current?.focus({ preventScroll: true });
+    return () => { document.title = previous; };
+  }, [pageTitle]);
+  useEffect(() => { setPanel(null); setPreview(null); }, [route.kind, route.id, route.category]);
+  const openPanel = kind => { const destination = panelRoute(kind); if (destination) onNavigate(destination); else if (kind === "home") onHome(); else setPanel(kind); };
+  const openWork = id => onNavigate({ kind: "work", id });
+  const workHref = id => portfolioHash({ kind: "work", id });
+  const en = language === "en";
+  return <div className="portfolio-work-page">
+    <Header onPanel={openPanel} onHome={onRestart} />
+    <main className="work-page-main" id="work-page-main">
+      <nav className="work-page-bar section-shell" aria-label={en ? "Page navigation" : "页面导航"}>
+        <button onClick={onBack}><ArrowLeft size={16} />{en ? "Back" : "返回"}</button>
+        <a href="#/works" onClick={event => { event.preventDefault(); onNavigate({ kind: "works", category: "all" }); }}>{en ? "ALL WORK" : "全部作品"}<ArrowUpRight size={14} /></a>
+        <a href="#/" onClick={event => { event.preventDefault(); onHome(); }}>{en ? "Back to the gallery" : "返回展廊"}</a>
+      </nav>
+      <h1 ref={title} tabIndex={-1} className="work-page-a11y-title">{pageTitle}</h1>
+      {work ? <article className="work-page-project"><ProjectBody work={work} onClose={onBack} onPreview={setPreview} /></article>
+        : route.kind === "work" ? <section className="work-page-missing section-shell"><p>404 / PROJECT</p><h2>{pageTitle}</h2><a className="text-action" href="#/works" onClick={event => { event.preventDefault(); onNavigate({ kind: "works", category: "all" }); }}>{t("查看全部作品")}<ArrowUpRight size={16} /></a></section>
+        : route.kind === "characters" ? <CharacterGallery onPreview={setPreview} />
+        : <WorkIndex key={category} onOpen={openWork} initialCategory={category} categoryOnly={category !== "all"} workHref={workHref} />}
+      <footer className="work-page-colophon section-shell"><span>LIU ZIEN / SELECTED WORK</span><span>{String(works.length).padStart(2, "0")} PROJECTS · 2026</span></footer>
+    </main>
+    {panel && <SitePanel kind={panel} onClose={() => setPanel(null)} onPanel={openPanel} onOpen={openWork} onHome={onRestart} />}
+    {preview && <Lightbox media={preview} onClose={() => setPreview(null)} />}
+  </div>;
+}
+
+export default function StudioPortfolio({ onNavigate, initialScenePosition }) {
   const { workById } = usePortfolioData();
   const { t, language } = useLocale();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialScenePosition);
   const finishLoading = useCallback(() => {
     // The browser may restore a scroll position while opening assets load.
     // Reset once more before exposing the scene and accepting navigation.
@@ -193,10 +235,16 @@ export default function StudioPortfolio() {
   const [panel, setPanel] = useState(null);
   const [browseCategory, setBrowseCategory] = useState("all");
   const [assistantOpen, setAssistantOpen] = useState(false);
-  const openPanel = (kind) => { setBrowseCategory("all"); setPanel(kind); };
-  const browseWorks = (category) => { setBrowseCategory(category); setPanel(category === "ip" ? "ip" : category === "other" ? "other" : category === "motion" ? "motion" : "works"); };
+  const openPanel = (kind) => { const destination = panelRoute(kind); if (onNavigate && destination) { onNavigate(destination); return; } setBrowseCategory("all"); setPanel(kind); };
+  const browseWorks = (category) => { if (onNavigate) { onNavigate({ kind: "works", category }); return; } setBrowseCategory(category); setPanel(category === "ip" ? "ip" : category === "other" ? "other" : category === "motion" ? "motion" : "works"); };
   const reduced = useReducedMotion();
-  const openWork = (id) => { if (workById[id]) setActiveWork(id); };
+  const openWork = (id) => { if (workById[id]) { if (onNavigate) onNavigate({ kind: "work", id }); else setActiveWork(id); } };
+  useLayoutEffect(() => {
+    if (!initialScenePosition) return;
+    const track = document.querySelector(".video-scroll-track");
+    const top = track ? track.offsetTop + initialScenePosition.progress * Math.max(1, track.offsetHeight - window.innerHeight) : initialScenePosition.top;
+    window.scrollTo({ top, behavior: "instant" });
+  }, []);
   useEffect(() => {
     document.body.classList.add("cinematic-mode");
     const id = window.location.hash.slice(1);

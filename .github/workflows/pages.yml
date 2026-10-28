@@ -24,10 +24,14 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Check scroll seeking and recovery
-        run: node --test scripts/test-scroll-video.mjs
+        run: node --test scripts/test-scroll-video.mjs scripts/test-portfolio-routes.mjs
+      - name: Render work subpages without background scenes
+        run: node scripts/test-work-pages.mjs
       - run: npm run build:pages
-      - name: Verify original media and lossless scroll streams
+      - name: Verify original media and optimized scroll timing
         run: node scripts/verify-static-build.mjs
+      - name: Decode independent HEVC and AVC segments
+        run: node scripts/verify-scroll-decoding.mjs
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist

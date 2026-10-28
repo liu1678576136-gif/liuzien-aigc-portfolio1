@@ -2,6 +2,7 @@ import { useLocale } from "../LocaleContext.jsx";
 import { useEffect, useRef } from "react";
 import { curtainScenes } from "../data/curtainScenes.js";
 import { createScrollVideo } from "../media/createScrollVideo.js";
+import { scrollStreamDirectory } from "../data/scrollMedia.js";
 
 const base = curtainScenes.finaleBase;
 
@@ -62,7 +63,7 @@ export default function CurtainFinale({ onPanel }) {
   }, []);
   return <div ref={root} className="curtain-finale" inert aria-hidden="true">
     <div className="curtain-finale-media">
-      <video ref={film} data-stream-src={`${base}stream/stream.json`} poster={`${base}poster.webp`} preload="none" muted playsInline disablePictureInPicture aria-label={t("深红幕布缓缓合拢")} />
+      <video ref={film} data-stream-src={`${base}${scrollStreamDirectory}/stream.json`} poster={`${base}poster.webp`} preload="none" muted playsInline disablePictureInPicture aria-label={t("深红幕布缓缓合拢")} />
       <img className="curtain-finale-fallback" src={`${base}closed.webp`} alt={t("完全闭合的深红舞台幕布")} />
     </div>
     <div className="curtain-finale-black" />

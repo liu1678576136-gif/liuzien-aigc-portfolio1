@@ -1,40 +1,46 @@
-# 线上部署记录
+# 线上部署与性能记录
 
-更新日期：2026-10-28（Asia/Shanghai）。用户已确认优先画质、使用部署前本地素材、任何拿到链接的人都可访问。
+更新日期：2026-10-28（Asia/Shanghai）。用户已确认公开访问、保留六幕滚动，点击海报进入作品子页面；滚动背景改用 2K H.265 CRF23，作品高清原文件保留。
 
 - 正式网址：https://liu1678576136-gif.github.io/liuzien-aigc-portfolio1/
-- 托管：GitHub Pages；GitHub Actions 工作流 `Deploy high-quality portfolio`。
-- 仓库：`liu1678576136-gif/liuzien-aigc-portfolio1`；生产分支：`codex/portfolio-live`。
-- 首次公开部署提交：`21436d7fd9a35a7edd1748cda7d100c2d3bcb93b`。后续版本以生产分支最新成功的 Actions 部署为准。
-- 首次成功运行：https://github.com/liu1678576136-gif/liuzien-aigc-portfolio1/actions/runs/40593544064
-- 部署源码目录：`C:/Users/刘大侠/Documents/作品集网站/outputs/github-deploy`。此目录为独立部署检出，现有主分支未改动。
+- 仓库：liu1678576136-gif/liuzien-aigc-portfolio1；生产分支：codex/portfolio-live。
+- 部署源码：C:/Users/刘大侠/Documents/作品集网站/outputs/github-deploy，独立于主工作区分支。
+- GitHub Actions 工作流：Deploy high-quality portfolio。当前版本以生产分支最新成功的部署为准。
 
-## 画质与构建
+## 背景压缩与兼容性
 
-当前构建约 680.4 MiB，只包含实际引用资源。23 个作品、六章节体验均使用本地版本。168 份作品媒体、音轨、图片、PDF 原文件保持一致。三段背景视频在 Git 源码中以 8 MiB 分段保存，由 `restore-source-media.mjs` 还原；构建再用 `prepare-scroll-streams.mjs` 无损封装为 145 个可按位置读取的 fMP4 片段。拆分前后全部视频编码包的 SHA-256 相同，没有缩小分辨率或重新编码。322 份发布文件逐文件核对；未将三份完整背景 MP4 重复放入上线包。
+三个背景的原 4K MP4 合计 332.8 MiB，均保留在本地。主版本限定最高 2560×1440，H.265 / hvc1、CRF23，合计约 90.4 MiB（减少 72.8%）。保持素材长宽比，因此各场景实际尺寸略有差异。兼容版本是最高 1920×1080 的 H.264 CRF21，合计约 52.9 MiB。
 
-生产构建：`npm run build:pages`。它会生成图片衍生图、Vite 构建、按引用清理资源，并适配 `/liuzien-aigc-portfolio1/` 路径。随后运行 `node scripts/verify-static-build.mjs` 核对文件。工作流再上传 `dist/` 并部署到 `github-pages` 环境。
+浏览器先检查实际编解码器支持；有 MediaCapabilities 时还检查 HEVC 硬件流畅性和效率，查询最多等 1 秒，不能高效处理时选择 AVC。只下载选中的版本。每约 0.2 秒一个独立片段，无 B 帧，快速和反向定位复用同一控制器。新 URL 使用 stream-web-v3，避免命中旧 4K 缓存。
 
-已在线验证：首页及当前应用代码 HTTP 200、无须登录；主场景原视频、工作台演示、品牌手册 HTTP HEAD 大小与本地一致，Range 请求 HTTP 206 且抽样字节相同。
+背景转码是有损压缩，细纹理会有少量损失，不能称为原编码无损。已对比海报区域样片；2K HEVC CRF23 的三秒样片相对同尺寸参考 SSIM 约 0.990，不能将该指标等同于肉眼质量百分比。完整作品视频、原图、PDF 和音轨未按此方案压缩。
 
-首次发布已完成原 MP4 的上述在线验证。滚轮修复版本改为检查流清单、初始化文件、首尾片段以及作品原文件；最终运行结果另见 Actions。浏览器连接在交互检查中反复超时，不能将自动化模块测试记录为完整浏览器手感验收。
+构建保持全部原帧时间和数量，转码后与原素材核对帧时间；分段后再逐包核对转码视频。18 个 HEVC / AVC 首、中、末片段单独解码，像素与对应的转码文件一致，验证随机进入片段可正确定位。
 
-## 2026-10-28 滚轮卡顿修复
+## 作品子页面
 
-开场原先仅等待封面图片；现在会等待首个已解码视频帧（最多 8 秒），慢网时明确提示正在载入。播放器只读取目标位置附近的原编码片段，取消过期下载，限制缓冲范围，允许替换已过时的未缓冲定位，并保留最新滚轮目标。正在正常解码的帧最多保留 120 毫秒，避免滚轮频繁打断解码。视频定位按素材帧率取整，谢幕共用同一控制器。Safari 原生 HLS 使用相同片段。
+保留六幕首页，海报、VI/IP、影像和作品入口导航到独立页面。示例：#/works/poster、#/works/brand、#/work/lze-workbench。使用哈希路由，直接打开和刷新仍由 GitHub Pages 首页提供，避免路径 404。
 
-13 项模块测试覆盖首次帧、快速滚动、过期定位、反向滚动、缓冲回收、失败重试、谢幕事件重入、卸载及原生 HLS 回退。首幕第一段约 1.50 MB，主场景第一段约 2.53 MB；场景原画质和作品原文件均保留。首次跨越未缓冲位置仍取决于网络速度。
+进入作品页会卸载首页滚动场景、停止分段请求。原图和视频按子页面需要加载。返回按钮和浏览器后退保留作品列表滚动位置；返回展廊使用保存的场景进度，适配窗口高度变化。菜单“从头开始”重新播放开场。
 
-## 后续更新
+## 构建与验证
 
-在主工作区编辑和预览内容；发布时将相应源码及原素材同步到 `outputs/github-deploy`，在该目录构建、核验并推送 `codex/portfolio-live`。同步新增大视频时更新 `source-media/manifest.json` 与分段，并将重建后的大 MP4 保持忽略。不要将主工作区之前的未发布大素材提交直接强推到生产分支。
+npm run build:pages：还原 Git 中分段保存的三段原背景、生成衍生图片、生成并缓存 HEVC/AVC、Vite 构建、清理未引用资源并适配项目路径。源文件保存为 8 MiB 分段属于 Git 运输方式，与在线播放片段不同。
 
-本机已有代理为 `http://127.0.0.1:7890`。Git 如直连失败，可在单次命令中使用 `-c http.proxy=http://127.0.0.1:7890 -c http.sslBackend=openssl -c http.version=HTTP/1.1`；无需改变系统配置。GitHub 登录通过系统已有凭据管理器使用，凭据不写入文件或输出。
+当前完整发布包约 491 MiB，739 份媒体文件逐一核对；其中 168 份原有作品媒体与附属文件保持不变。23 项模块测试覆盖定位、格式回退、下载取消、缓冲回收、路由和位置保存。另渲染作品索引、分类、详情、缺失作品与英文页面，确认作品子页不挂载背景视频。
 
-## 保留的历史尝试
+检查命令：
+- node --test scripts/test-scroll-video.mjs scripts/test-portfolio-routes.mjs
+- node scripts/test-work-pages.mjs
+- node scripts/verify-static-build.mjs
+- node scripts/verify-scroll-decoding.mjs
 
-Sites 路线因 256 MiB 总包限制停止，用户明确选择改用更合适的托管并恢复未压缩版本。`outputs/sites-source`、各压缩缓存和旧归档是历史尝试，不是生产发布来源；原 Sites 站点的内容与访问设置未改动。本地原文件均保留。`npm run build:sites` 为历史打包入口。
+浏览器控制连接多次超时；上述模块测试、页面渲染与视频解码不能记为实际浏览器滚轮手感验收。上线后另外核对新代码、公开片段以及作品原文件。
 
-## 额度中断的兜底
+## 发布方式
 
-本对话已设置 2026-10-28 08:15 的一次性续接检查：仅任务未完成且额度恢复时续做；已完成则保持安静，不重复部署。该检查依赖电脑开机联网、桌面应用运行。
+将修改的源码同步至 outputs/github-deploy，完成构建及验证后，推送该目录的 codex/portfolio-live；不要强推主工作区历史。生成的 stream-web-* 目录和 outputs 缓存不提交，云端从原文件复现。
+
+Git 若直连失败，沿用本机已开启代理，仅对单次命令指定 http.proxy=http://127.0.0.1:7890、http.sslBackend=openssl、http.version=HTTP/1.1。不更改系统代理或全局 Git 设置。使用系统已有 GitHub 登录，不输出或保存凭据。
+
+Sites 256 MiB 路线和此前 4K 无损分段发布是历史版本，不是本次性能方案。额度恢复后的续接检查已在上次完成时删除，不会自动重复发布。

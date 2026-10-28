@@ -1,6 +1,6 @@
 import { LocaleProvider } from "./LocaleContext.jsx";
-import StudioPortfolio from "./components/StudioPortfolio.jsx";
+import PortfolioRouter from "./components/PortfolioRouter.jsx";
 
 export default function App() {
-  return <LocaleProvider><StudioPortfolio /></LocaleProvider>;
+  return <LocaleProvider><PortfolioRouter /></LocaleProvider>;
 }

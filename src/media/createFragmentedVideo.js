@@ -12,9 +12,26 @@ export function containsTime(ranges, time) {
   return false;
 }
 
-// Keep the original encoded 4K frames, but fetch only the current scroll region.
+export async function selectStreamVariant(variants, video, { mediaSource = globalThis.MediaSource, capabilities = globalThis.navigator?.mediaCapabilities, capabilityTimeoutMs = 1000 } = {}) {
+  for (const variant of variants) {
+    const mse = Boolean(mediaSource?.isTypeSupported(variant.mime));
+    const native = Boolean(video.canPlayType(variant.mime) && video.canPlayType("application/vnd.apple.mpegurl"));
+    if (!mse && !native) continue;
+    if (variant.codec === "hevc" && capabilities?.decodingInfo) {
+      let timeout;
+      try {
+        const info = await Promise.race([capabilities.decodingInfo({ type: mse ? "media-source" : "file", video: { contentType: variant.mime, width: variant.width, height: variant.height, bitrate: variant.bitrate, framerate: variant.fps } }), new Promise(resolve => { timeout = setTimeout(() => resolve(null), capabilityTimeoutMs); })]);
+        if (!info?.supported || !info.smooth || !info.powerEfficient) continue;
+      } catch { continue; } finally { clearTimeout(timeout); }
+    }
+    return variant;
+  }
+  throw new Error("No supported scroll video format");
+}
+
+// Fetch the current region of the optimized video, retaining calibrated timing.
 export function createFragmentedVideo(video, { fps = 25, timeAtProgress = (p, d) => p * d, onFrame = () => {} } = {}) {
-  const manifestUrl = new URL(video.dataset.streamSrc, document.baseURI);
+  let manifestUrl = new URL(video.dataset.streamSrc, document.baseURI);
   const lifetime = new AbortController();
   const cache = new Map(), downloads = new Map(), appended = new Set(), retries = new Map();
   let disposed = false, enabled = false, progress = 0, manifest, source, buffer, objectUrl;
@@ -130,7 +147,17 @@ export function createFragmentedVideo(video, { fps = 25, timeAtProgress = (p, d)
       if (!response.ok) throw new Error(`Video manifest HTTP ${response.status}`);
       manifest = await response.json();
       if (disposed) return;
+      if (manifest.version === 2 && Array.isArray(manifest.variants)) {
+        const variant = await selectStreamVariant(manifest.variants, video);
+        if (disposed) return;
+        manifestUrl = new URL(variant.url, manifestUrl);
+        const selected = await fetch(manifestUrl, { signal: lifetime.signal });
+        if (!selected.ok) throw new Error(`Selected video HTTP ${selected.status}`);
+        manifest = await selected.json();
+        if (disposed) return;
+      }
       if (manifest.version !== 1 || !Number.isFinite(manifest.duration) || !manifest.segments?.length) throw new Error("Invalid video stream");
+      video.dataset.streamCodec = manifest.codec || "avc";
       video.preload = "auto";
       if (!globalThis.MediaSource?.isTypeSupported(manifest.mime)) {
         if (!video.canPlayType("application/vnd.apple.mpegurl")) throw new Error("Video streaming unsupported");

@@ -4,6 +4,7 @@ import { creator, works } from "../src/data/studio.js";
 import { characterImages, characterWebShowcase, characterVideos } from "../src/data/characterGallery.js";
 import { curtainScenes } from "../src/data/curtainScenes.js";
 import { mainVideo } from "../src/data/mainVideo.js";
+import { scrollStreamDirectory } from "../src/data/scrollMedia.js";
 
 const output = resolve("dist");
 const assets = join(output, "assets");
@@ -24,11 +25,18 @@ async function walk(directory) {
 collect([creator, works, characterImages, characterWebShowcase, characterVideos]);
 collect(["/assets/scene/studio-screen-loop.mp4", "/assets/scene/studio-screen-poster.webp", "/assets/audio/evening-breeze-v4-vocals.mp3", "/assets/audio/evening-breeze-v3-comparison.mp3"]);
 for (const base of [curtainScenes.openingVideoBase, mainVideo.base, curtainScenes.finaleBase]) {
-  const stream = JSON.parse(await readFile(join(output, base, "stream/stream.json"), "utf8"));
-  const streamFiles = new Set(["stream.json", stream.init, stream.playlist, ...stream.segments.map(part => part.file)]);
+  const directory = base + scrollStreamDirectory + "/";
+  const selector = JSON.parse(await readFile(join(output, directory, "stream.json"), "utf8"));
+  collect(directory + "stream.json");
+  for (const variant of selector.variants) {
+    const stream = JSON.parse(await readFile(join(output, directory, variant.url), "utf8"));
+    const prefix = directory + variant.url.slice(0, variant.url.lastIndexOf("/") + 1);
+    collect(directory + variant.url);
+    for (const file of [stream.init, stream.playlist, ...stream.segments.map(part => part.file)]) collect(prefix + file);
+  }
   for (const file of await walk(join(output, base))) {
     const url = "/" + relative(output, file).split(sep).join("/");
-    if (url.startsWith(base + "stream/") && !streamFiles.has(url.slice((base + "stream/").length))) continue;
+    if (url.slice(base.length).includes("/")) continue;
     if (url !== base + "film.mp4") collect(url);
   }
 }
@@ -52,4 +60,4 @@ const bytes = (await Promise.all(published.map(file => stat(file)))).reduce((sum
 if (bytes >= 1000000000) throw new Error("Build exceeds GitHub Pages 1 GB site limit");
 await mkdir("outputs", { recursive: true });
 await writeFile("outputs/static-media.json", JSON.stringify([...required].filter(url => !/\.(js|css)$/.test(url)), null, 2));
-console.log(`High-quality static build: ${published.length} assets, ${(bytes / 1048576).toFixed(1)} MiB; ${excluded} unused assets excluded. Scroll films losslessly segmented; portfolio media retained.`);
+console.log(`Optimized static build: ${published.length} assets, ${(bytes / 1048576).toFixed(1)} MiB; ${excluded} unused assets excluded. Optimized scroll backgrounds; original portfolio media retained.`);

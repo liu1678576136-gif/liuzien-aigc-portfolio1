@@ -10,6 +10,7 @@ import PosterReflections from "./PosterReflections.jsx";
 import SceneNodeControls from "./SceneNodeControls.jsx";
 import useSceneParallax from "./useSceneParallax.js";
 import { curtainScenes } from "../data/curtainScenes.js";
+import { scrollStreamDirectory } from "../data/scrollMedia.js";
 import { createScrollVideo } from "../media/createScrollVideo.js";
 import { createMainVideo } from "../media/createMainVideo.js";
 import { mainVideo } from "../data/mainVideo.js";
@@ -278,7 +279,7 @@ export default function VideoScrollExperience({ onPanel, onBrowse, reduced, paus
       {visibleClips.map((clip, index) => <div key={clip} className={`video-scroll-layer video-scroll-layer-${index}`}>
         <img src={scenePoster(clip, index)} loading={index >= 2 ? "lazy" : "eager"} alt={t(["舞台红幕徐徐开启", "红色展廊与海报作品", "暖光工作台与闭合画册", "从暖光书房转入摄影棚电脑工作站"][index])} />
         {index === 0 || joinedTest
-          ? <video ref={index === 0 ? first : second} data-stream-src={`${index === 0 ? curtainScenes.openingVideoBase : mainVideo.base}stream/stream.json`} data-opening-video={index === 0 ? "true" : undefined} poster={scenePoster(clip, index)} preload={index === 0 ? "auto" : "none"} muted playsInline disablePictureInPicture aria-hidden="true" />
+          ? <video ref={index === 0 ? first : second} data-stream-src={`${index === 0 ? curtainScenes.openingVideoBase : mainVideo.base}${scrollStreamDirectory}/stream.json`} data-opening-video={index === 0 ? "true" : undefined} poster={scenePoster(clip, index)} preload={index === 0 ? "auto" : "none"} muted playsInline disablePictureInPicture aria-hidden="true" />
           : <canvas ref={[first, second, third, fourth][index]} aria-hidden="true" />}
       </div>)}
       <div className="video-edge-blur" aria-hidden="true" />
