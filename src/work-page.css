@@ -4,9 +4,13 @@
 .portfolio-work-page .work-card-button { display: block; }
 .work-page-main { padding-top: 114px; }
 .work-page-bar { display: flex; align-items: center; gap: 30px; min-height: 64px; padding-block: 14px; border-bottom: 1px solid var(--line); font-size: 12px; }
-.work-page-bar > :first-child { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; }
-.work-page-bar > :nth-child(2) { display: inline-flex; align-items: center; gap: 9px; margin-left: auto; color: #c9a594; }
-.work-page-bar > :last-child { min-height: 40px; display: inline-flex; align-items: center; border-bottom: 1px solid #ffffff35; }
+.work-page-back { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-width: 108px; min-height: 46px; padding: 0 20px; border: 1px solid #f5a291; border-radius: 5px; background: #e77d6b; color: #211613; font-size: 14px; font-weight: 650; transition: background .18s, border-color .18s; }
+.work-page-back:hover { background: #f59a86; border-color: #ffc3b2; }
+.work-page-back:active { background: #d76e5d; }
+.work-page-back:focus-visible { outline: 2px solid #ffd6c9; outline-offset: 4px; }
+.work-page-all { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; margin-left: auto; color: #c9a594; }
+.work-page-all:hover { color: #fff1e7; }
+@media (prefers-reduced-motion: reduce) { .work-page-back { transition: none; } }
 .work-page-a11y-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .portfolio-work-page .work-index { padding-top: 48px; padding-bottom: 64px; }
 .work-page-project { padding-inline: max(7%, calc((100vw - 1300px) / 2)); }

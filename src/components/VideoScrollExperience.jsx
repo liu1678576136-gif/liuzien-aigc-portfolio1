@@ -183,7 +183,8 @@ export default function VideoScrollExperience({ onPanel, onBrowse, reduced, paus
       posterInteraction.inert = !holding;
       posterInteraction.setAttribute("aria-hidden", String(!holding));
       sequences[0].update(a, p < .52);
-      sequences[1].update(b, p > .34 && (joinedTest || p < 1.03));
+      const openingReady = first.current?.dataset.firstFrame === "true";
+      sequences[1].update(b, (openingReady || p > .34) && (joinedTest || p < 1.03));
       sequences[2]?.update(clamp((p - deskJoinEnd) / (deskEnd - deskJoinEnd)), !joinedTest && p > .85);
       // Reveal the incoming room's first frame through white; its camera only
       // advances once the exposure has cleared. All phases reverse with scrolling.
@@ -267,10 +268,12 @@ export default function VideoScrollExperience({ onPanel, onBrowse, reduced, paus
       render();
     };
     resize();
+    const openingVideo = first.current;
+    openingVideo.addEventListener("scroll-video-frame", schedule, { once: true });
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("wheel", wheel, { passive: false });
     window.addEventListener("resize", resize);
-    return () => { cancelAnimationFrame(request); window.removeEventListener("scroll", schedule); window.removeEventListener("wheel", wheel); window.removeEventListener("resize", resize); sequences.forEach(sequence => sequence.dispose()); document.body.classList.remove("video-transition-bright"); };
+    return () => { cancelAnimationFrame(request); openingVideo.removeEventListener("scroll-video-frame", schedule); window.removeEventListener("scroll", schedule); window.removeEventListener("wheel", wheel); window.removeEventListener("resize", resize); sequences.forEach(sequence => sequence.dispose()); document.body.classList.remove("video-transition-bright"); };
   }, [reduced]);
 
   if (reduced) return <section id="experience" className="video-quiet">{clips.map((clip, index) => <section key={clip} style={{ backgroundImage: `url(${scenePoster(clip, index)})` }}><div><p>0{index + 1} / LIU ZIEN</p><h1>{t(chapterTitles[index])}</h1><button onClick={() => onPanel("works")}>{t("浏览作品 ↗")}</button></div></section>)}{joinedTest && <section style={{ backgroundImage: `url(${curtainScenes.finaleBase}closed.webp)` }}><div><p>{t("刘梓恩 / LIU ZIEN")}</p><h2>{t("这一幕，先到这里。")}<br />{t("下一幕，期待与你一起。")}</h2><button onClick={() => onPanel("works")}>{t("查看全部作品 ↗")}</button></div></section>}<div className="portfolio-vignette" aria-hidden="true" /></section>;

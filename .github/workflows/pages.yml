@@ -23,6 +23,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Reuse optimized video encodings
+        uses: actions/cache@v4
+        with:
+          path: outputs/scroll-streams
+          key: scroll-media-${{ runner.os }}-${{ hashFiles('source-media/manifest.json', 'public/assets/scene/*/manifest.json', 'src/data/scrollMedia.js', 'scripts/prepare-scroll-streams.mjs', 'package-lock.json') }}
       - name: Check scroll seeking and recovery
         run: node --test scripts/test-scroll-video.mjs scripts/test-portfolio-routes.mjs
       - name: Render work subpages without background scenes

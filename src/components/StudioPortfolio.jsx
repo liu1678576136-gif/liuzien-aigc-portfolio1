@@ -205,9 +205,8 @@ export function WorkPage({ route, onNavigate, onBack, onHome, onRestart = onHome
     <Header onPanel={openPanel} onHome={onRestart} />
     <main className="work-page-main" id="work-page-main">
       <nav className="work-page-bar section-shell" aria-label={en ? "Page navigation" : "页面导航"}>
-        <button onClick={onBack}><ArrowLeft size={16} />{en ? "Back" : "返回"}</button>
-        <a href="#/works" onClick={event => { event.preventDefault(); onNavigate({ kind: "works", category: "all" }); }}>{en ? "ALL WORK" : "全部作品"}<ArrowUpRight size={14} /></a>
-        <a href="#/" onClick={event => { event.preventDefault(); onHome(); }}>{en ? "Back to the gallery" : "返回展廊"}</a>
+        <button className="work-page-back" onClick={onBack}><ArrowLeft size={19} strokeWidth={1.8} aria-hidden="true" /><span>{en ? "Back" : "返回"}</span></button>
+        <a className="work-page-all" href="#/works" onClick={event => { event.preventDefault(); onNavigate({ kind: "works", category: "all" }); }}>{en ? "ALL WORK" : "全部作品"}<ArrowUpRight size={14} /></a>
       </nav>
       <h1 ref={title} tabIndex={-1} className="work-page-a11y-title">{pageTitle}</h1>
       {work ? <article className="work-page-project"><ProjectBody work={work} onClose={onBack} onPreview={setPreview} /></article>

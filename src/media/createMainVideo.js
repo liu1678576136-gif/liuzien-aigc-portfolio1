@@ -1,11 +1,12 @@
 import { createScrollVideo } from "./createScrollVideo.js";
-import { mainVideo, mainVideoTime, mainSourceFrame, mainScreenCorners } from "../data/mainVideo.js";
+import { mainVideo, mainVideoTime, mainSourceFrame, mainScreenCorners, mainVideoChapters } from "../data/mainVideo.js";
 import { screenPresentation, screenProjection } from "../data/screenPresentation.js";
 
 export function createMainVideo(video) {
   const track = video.closest(".video-scroll-track");
   return createScrollVideo(video, {
     fps: mainVideo.fps,
+    chapters: mainVideoChapters,
     timeAtProgress: mainVideoTime,
     onFrame(media) {
       // Project onto the decoded frame, including reverse seeks and viewport changes.

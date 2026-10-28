@@ -1,6 +1,14 @@
 import { mainVideoCalibration as calibration } from "./mainVideoCalibration.js";
 
 export const mainVideo = { id: "main-gallery-4k-v4", base: "/assets/scene/main-gallery-4k-v4/", fps: 30 };
+// Boundaries follow the existing held poses (11.967, 22.567 and 32.1 s),
+// aligned to the existing 0.2 s fragments. Filmed transitions remain continuous.
+export const mainVideoChapters = [
+  { id: "gallery", start: 0, end: 12 },
+  { id: "desk", start: 12, end: 22.6 },
+  { id: "studio", start: 22.6, end: 32.2 },
+  { id: "rooms", start: 32.2, end: null },
+];
 const clamp = n => Math.max(0, Math.min(1, n));
 const mix = (a, b, t) => a + (b - a) * t;
 

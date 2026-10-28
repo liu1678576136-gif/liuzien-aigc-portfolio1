@@ -4,8 +4,9 @@ import { createReadStream } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { curtainScenes } from "../src/data/curtainScenes.js";
-import { mainVideo } from "../src/data/mainVideo.js";
+import { mainVideo, mainVideoChapters } from "../src/data/mainVideo.js";
 import { scrollStreamDirectory, scrollStreamProfiles } from "../src/data/scrollMedia.js";
+import { chapterPreloadPlan } from "../src/media/chapterPreload.js";
 const urls = JSON.parse(await readFile("outputs/static-media.json", "utf8"));
 async function digest(file) {
   const hash = createHash("sha256");
@@ -28,6 +29,10 @@ for (const base of [curtainScenes.openingVideoBase, mainVideo.base, curtainScene
   assert.equal(manifest.sourceTimelineSha256, manifest.timelineSha256, "All original frame times preserved");
   assert(manifest.segments.every(part => part.start >= 0 && part.end > part.start));
   assert(Math.abs(manifest.segments.at(-1).end - manifest.duration) < .05);
+  if (base === mainVideo.base) for (const chapter of mainVideoChapters) {
+    const plan = chapterPreloadPlan(manifest.segments, mainVideoChapters, chapter.start + .01);
+    assert([...plan.currentIndexes, ...plan.nextIndexes].every(i => plan.retained.has(i)), "Current and next main acts fit the compressed-byte cache");
+  }
   }
 }
 console.log(`Verified ${urls.length} published files with SHA-256; 2K HEVC CRF23 and AVC fallback keep original frame timing. Original portfolio files unchanged.`);

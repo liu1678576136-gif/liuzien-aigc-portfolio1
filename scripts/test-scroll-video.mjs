@@ -1,13 +1,15 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createFragmentedVideo, containsTime, segmentAt, selectStreamVariant } from "../src/media/createFragmentedVideo.js";
+import { chapterPreloadPlan, createVideoDownloadCoordinator } from "../src/media/chapterPreload.js";
+import { mainVideoChapters } from "../src/data/mainVideo.js";
 
 const settle = async () => { for (let i = 0; i < 12; i++) await new Promise(resolve => setImmediate(resolve)); };
 const ranges = values => ({ length: values.length, start: i => values[i][0], end: i => values[i][1] });
-function harness({ delayed = [], failures = [], native = false, master } = {}) {
+function harness({ delayed = [], failures = [], native = false, master, chapters, prefetchBytes, coordinator } = {}) {
   const saved = { fetch: globalThis.fetch, document: globalThis.document, MediaSource: globalThis.MediaSource, create: URL.createObjectURL, revoke: URL.revokeObjectURL };
-  const requests = [], revoked = [], sources = new Map();
-  const manifest = { version: 1, duration: 10, mime: 'video/mp4; codecs="avc1.640033"', init: "init.mp4", playlist: "stream.m3u8", segments: Array.from({ length: 20 }, (_, i) => ({ file: `part-${i}.m4s`, start: i / 2, end: (i + 1) / 2 })) };
+  const requests = [], revoked = [], sources = new Map(), pending = new Map();
+  const manifest = { version: 1, duration: 10, mime: 'video/mp4; codecs="avc1.640033"', init: "init.mp4", playlist: "stream.m3u8", segments: Array.from({ length: 20 }, (_, i) => ({ file: `part-${i}.m4s`, start: i / 2, end: (i + 1) / 2, bytes: 1 })) };
   let video;
   class SourceBuffer extends EventTarget {
     constructor() { super(); this.parts = new Set(); this.updating = false; this.operations = 0; }
@@ -66,12 +68,15 @@ function harness({ delayed = [], failures = [], native = false, master } = {}) {
     const path = new URL(url).pathname, index = /part-(\d+)/.exec(path)?.[1];
     requests.push({ path, signal });
     if (path.endsWith("stream.json")) return { ok: true, json: async () => master && path === "/repo/stream/stream.json" ? master : manifest };
-    if (index !== undefined && delayed.includes(Number(index))) return new Promise((_, reject) => signal.addEventListener("abort", () => reject(new Error("aborted")), { once: true }));
+    if (index !== undefined && delayed.includes(Number(index))) return new Promise((resolve, reject) => {
+      pending.set(Number(index), () => resolve({ ok: true, arrayBuffer: async () => Uint8Array.of(Number(index) + 1).buffer }));
+      signal.addEventListener("abort", () => reject(new Error("aborted")), { once: true });
+    });
     if (index !== undefined && failures.includes(Number(index))) return { ok: false, status: 503 };
     return { ok: true, arrayBuffer: async () => Uint8Array.of(index === undefined ? 255 : Number(index) + 1).buffer };
   };
-  const controller = createFragmentedVideo(video, { fps: 25 });
-  return { video, controller, requests, revoked, buffer: () => [...sources.values()][0]?.buffer,
+  const controller = createFragmentedVideo(video, { fps: 25, chapters, prefetchBytes, coordinator });
+  return { video, controller, requests, revoked, buffer: () => [...sources.values()][0]?.buffer, completePart(index) { pending.get(index)?.(); pending.delete(index); },
     restore() { controller.dispose(); globalThis.fetch = saved.fetch; globalThis.document = saved.document; globalThis.MediaSource = saved.MediaSource; URL.createObjectURL = saved.create; URL.revokeObjectURL = saved.revoke; } };
 }
 
@@ -210,5 +215,115 @@ test("disposing cancels downloads, releases the media URL and emits no late fram
     h.controller.update(0, true); await settle(); h.controller.dispose(); await settle();
     assert(h.requests.filter(r => r.path.includes("part-")).every(r => r.signal.aborted));
     assert.equal(h.revoked.length, 1); assert.notEqual(h.video.dataset.firstFrame, "true");
+  } finally { h.restore(); }
+});
+
+const acts = [
+  { id: "gallery", start: 0, end: 2.5 }, { id: "desk", start: 2.5, end: 5 },
+  { id: "studio", start: 5, end: 7.5 }, { id: "rooms", start: 7.5, end: null },
+];
+test("the four main groups keep held frames inside their existing scenes", () => {
+  const segments = Array.from({ length: 193 }, (_, i) => ({ start: i / 5, end: Math.min((i + 1) / 5, 38.466667), bytes: 1 }));
+  for (const [time, id, next] of [[11.966667, "gallery", "desk"], [22.566667, "desk", "studio"], [32.1, "studio", "rooms"], [38.433333, "rooms", ""]]) {
+    const plan = chapterPreloadPlan(segments, mainVideoChapters, time);
+    assert.equal(plan.current, id); assert.equal(plan.next, next);
+  }
+});
+test("current and next acts are fully downloaded without decoding future scenes", async () => {
+  const h = harness({ chapters: acts });
+  try {
+    h.controller.update(0, true); await settle();
+    const fetched = h.requests.filter(r => /part-/.test(r.path)).map(r => Number(/part-(\d+)/.exec(r.path)[1]));
+    assert.deepEqual(fetched, Array.from({ length: 10 }, (_, i) => i));
+    assert.equal(h.video.dataset.prefetchCurrent, "5/5"); assert.equal(h.video.dataset.prefetchNext, "5/5");
+    assert.equal(h.video.dataset.prefetchNextReady, "true");
+    assert(h.buffer().parts.size <= 2, "Future-act bytes stay out of the decoding buffer");
+  } finally { h.restore(); }
+});
+test("crossing into a prefetched act needs no repeated foreground transfer", async () => {
+  const h = harness({ chapters: acts });
+  try {
+    h.controller.update(0, true); await settle(); h.controller.update(.3, true); await settle();
+    assert.equal(h.video.currentTime, 3); assert.equal(h.video.dataset.prefetchChapter, "desk");
+    assert.equal(h.video.dataset.prefetchNextChapter, "studio"); assert.equal(h.video.dataset.prefetchNextReady, "true");
+    assert.equal(h.requests.filter(r => r.path.endsWith("part-6.m4s")).length, 1);
+    h.controller.update(.1, true); await settle();
+    assert.equal(h.video.currentTime, 1); assert.equal(h.requests.filter(r => r.path.endsWith("part-2.m4s")).length, 1);
+    assert(h.buffer().parts.size <= 7);
+  } finally { h.restore(); }
+});
+test("jumping to a later act preempts unfinished background work", async () => {
+  const h = harness({ chapters: acts, delayed: [2] });
+  try {
+    h.controller.update(0, true); await settle();
+    h.controller.update(.9, true); await settle();
+    assert(h.requests.find(r => r.path.endsWith("part-2.m4s")).signal.aborted);
+    assert.equal(h.video.currentTime, 9); assert.equal(h.video.dataset.streamError, "false");
+    assert.equal(h.video.dataset.prefetchChapter, "rooms");
+  } finally { h.restore(); }
+});
+test("an in-flight future fragment is promoted rather than downloaded twice", async () => {
+  const h = harness({ chapters: acts, delayed: [2] });
+  try {
+    h.controller.update(0, true); await settle(); h.controller.update(.1, true); await settle();
+    const request = h.requests.find(r => r.path.endsWith("part-2.m4s"));
+    assert(!request.signal.aborted); h.completePart(2); await settle();
+    assert.equal(h.video.currentTime, 1); assert.equal(h.requests.filter(r => r.path.endsWith("part-2.m4s")).length, 1);
+  } finally { h.restore(); }
+});
+test("a different player's visible frame can interrupt speculative loading", async () => {
+  const delayed = [2], coordinator = createVideoDownloadCoordinator(), other = Symbol("opening");
+  const h = harness({ chapters: acts, delayed, coordinator });
+  try {
+    h.controller.update(0, true); await settle(); coordinator.setUrgent(other, true); await settle();
+    assert(h.requests.find(r => r.path.endsWith("part-2.m4s")).signal.aborted);
+    assert(!h.requests.some(r => r.path.endsWith("part-3.m4s")));
+    delayed.length = 0; coordinator.setUrgent(other, false); await settle();
+    assert.equal(h.video.dataset.prefetchNextReady, "true");
+  } finally { coordinator.setUrgent(other, false); h.restore(); }
+});
+test("chapter caching respects its byte budget instead of looping over evictions", async () => {
+  const h = harness({ chapters: acts, prefetchBytes: 8 });
+  try {
+    h.controller.update(0, true); await settle(); assert(Number(h.video.dataset.prefetchCacheBytes) <= 8);
+    assert.equal(h.requests.filter(r => /part-/.test(r.path)).length, 8);
+    h.controller.update(.6, true); await settle();
+    assert.equal(h.video.currentTime, 6); assert(Number(h.video.dataset.prefetchCacheBytes) <= 8);
+    assert(h.requests.filter(r => /part-/.test(r.path)).length < 22);
+  } finally { h.restore(); }
+});
+test("chapter bytes survive browser decode-buffer eviction without a new download", async () => {
+  const h = harness({ chapters: acts });
+  try {
+    h.controller.update(.1, true); await settle(); const before = h.requests.length;
+    h.buffer().parts.clear(); h.video.readyState = 1;
+    h.controller.update(.1, true); await settle();
+    assert(containsTime(h.video.buffered, 1)); assert.equal(h.requests.length, before);
+  } finally { h.restore(); }
+});
+test("a failed speculative fragment does not block the displayed scene", async () => {
+  const failures = [2], h = harness({ chapters: acts, failures });
+  try {
+    h.controller.update(0, true); await settle();
+    assert.equal(h.video.dataset.firstFrame, "true"); assert.equal(h.video.dataset.streamError, "false");
+    h.controller.update(.1, true); await settle(); assert.equal(h.video.dataset.streamError, "true");
+    failures.length = 0; h.video.dispatchEvent(new Event("stream-retry")); await settle();
+    assert.equal(h.video.currentTime, 1); assert.equal(h.video.dataset.streamError, "false");
+  } finally { h.restore(); }
+});
+test("native HLS never starts duplicate JavaScript chapter transfers", async () => {
+  const h = harness({ chapters: acts, native: true });
+  try {
+    h.controller.update(0, true); await settle();
+    assert.equal(h.video.dataset.preloadStrategy, "native-hls"); assert.equal(h.requests.length, 1);
+  } finally { h.restore(); }
+});
+test("a transient preload failure gets a fresh retry budget on arrival", async () => {
+  const failures = [2], h = harness({ chapters: acts, failures });
+  try {
+    h.controller.update(0, true); await settle();
+    assert.equal(h.video.dataset.streamError, "false");
+    failures.length = 0; h.controller.update(.1, true); await settle();
+    assert.equal(h.video.currentTime, 1); assert.equal(h.video.dataset.streamError, "false");
   } finally { h.restore(); }
 });
